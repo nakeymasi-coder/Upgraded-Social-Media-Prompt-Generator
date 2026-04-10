@@ -1,0 +1,3759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Social Media Fantasy Prompt Generator</title>
+  <style>
+    :root{
+      --bg:#081120;
+      --panel:#0f1b31;
+      --panel2:#132443;
+      --line:#29456f;
+      --text:#eef4ff;
+      --muted:#9cb2d8;
+      --accent:#58c3ff;
+      --accent2:#ff5fd2;
+      --good:#39d98a;
+      --warn:#ffb84d;
+      --danger:#ff6b6b;
+      --shadow:0 12px 30px rgba(0,0,0,.35);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    html,body{margin:0;padding:0;background:linear-gradient(180deg,#07101f 0%,#0a1630 100%);color:var(--text);font-family:Inter,Arial,sans-serif}
+    body{padding:24px}
+    h1,h2,h3{margin:0 0 12px}
+    .wrap{max-width:1450px;margin:0 auto}
+    .hero{
+      background:
+        radial-gradient(circle at top left, rgba(88,195,255,.2), transparent 32%),
+        radial-gradient(circle at top right, rgba(255,95,210,.18), transparent 28%),
+        linear-gradient(135deg, rgba(88,195,255,.08), rgba(255,95,210,.06)),
+        var(--panel);
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:24px;
+      box-shadow:var(--shadow);
+      margin-bottom:18px;
+    }
+    .hero h1{
+      font-size:clamp(28px,4vw,44px);
+      line-height:1.05;
+      font-weight:900;
+      letter-spacing:.2px;
+    }
+    .sub{
+      color:var(--muted);
+      margin-top:10px;
+      font-size:15px;
+      line-height:1.5;
+      max-width:980px;
+    }
+
+    .toolbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+
+    button{
+      border:none;
+      outline:none;
+      border-radius:14px;
+      padding:12px 16px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.18s ease;
+      color:#081120;
+      background:var(--accent);
+      box-shadow:0 8px 18px rgba(88,195,255,.25);
+    }
+    button:hover{transform:translateY(-1px)}
+    button.secondary{
+      background:#173055;
+      color:var(--text);
+      box-shadow:none;
+      border:1px solid var(--line);
+    }
+    button.pink{
+      background:var(--accent2);
+      color:#fff;
+      box-shadow:0 8px 18px rgba(255,95,210,.25);
+    }
+    button.good{
+      background:var(--good);
+      color:#07101f;
+      box-shadow:0 8px 18px rgba(57,217,138,.22);
+    }
+    button.warn{
+      background:var(--warn);
+      color:#07101f;
+    }
+    button.danger{
+      background:var(--danger);
+      color:#fff;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 420px 1fr;
+      gap:18px;
+      align-items:start;
+    }
+    @media (max-width:1150px){
+      .grid{grid-template-columns:1fr}
+    }
+
+    .left, .right{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+
+    details.section{
+      border:1px solid var(--line);
+      background:linear-gradient(180deg,var(--panel) 0%,var(--panel2) 100%);
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
+    details.section[open] summary{
+      border-bottom:1px solid var(--line);
+      background:rgba(255,255,255,.02);
+    }
+    summary{
+      list-style:none;
+      cursor:pointer;
+      padding:16px 18px;
+      font-size:17px;
+      font-weight:900;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    summary::-webkit-details-marker{display:none}
+    .section-body{padding:16px}
+
+    .field-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width:700px){
+      .field-grid{grid-template-columns:1fr}
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .field.full{grid-column:1 / -1}
+    label{
+      font-size:12px;
+      font-weight:800;
+      color:#cfe0ff;
+      text-transform:uppercase;
+      letter-spacing:.7px;
+    }
+    select,input,textarea{
+      width:100%;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#0b1730;
+      color:var(--text);
+      padding:12px 12px;
+      font-size:14px;
+      outline:none;
+    }
+    textarea{
+      min-height:88px;
+      resize:vertical;
+      line-height:1.45;
+    }
+    select:focus,input:focus,textarea:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(88,195,255,.12);
+    }
+
+    .pill-note{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.45;
+      background:rgba(255,255,255,.03);
+      border:1px dashed var(--line);
+      border-radius:12px;
+      padding:10px 12px;
+    }
+
+    .output-card{
+      border:1px solid var(--line);
+      background:linear-gradient(180deg,var(--panel) 0%,var(--panel2) 100%);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .output-head{
+      padding:16px 18px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .output-head h2{
+      font-size:20px;
+      font-weight:900;
+    }
+    .output-body{
+      padding:18px;
+      display:grid;
+      gap:16px;
+    }
+
+    .out-block{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .out-label{
+      font-size:12px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.7px;
+      color:#cfe0ff;
+    }
+
+    .out-area{
+      min-height:210px;
+      white-space:pre-wrap;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#091327;
+      padding:16px;
+      line-height:1.6;
+      color:#edf4ff;
+      font-size:14px;
+    }
+
+    .tiny{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      color:#cfe0ff;
+      font-size:12px;
+      font-weight:800;
+    }
+
+    
+    .preset-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width:700px){
+      .preset-grid{grid-template-columns:1fr}
+    }
+    .preset-btn{
+      width:100%;
+      text-align:left;
+      background:linear-gradient(135deg, rgba(88,195,255,.18), rgba(255,95,210,.18));
+      color:var(--text);
+      border:1px solid var(--line);
+      box-shadow:0 0 0 rgba(0,0,0,0);
+    }
+    .preset-btn:hover{
+      box-shadow:0 0 18px rgba(88,195,255,.28), 0 0 26px rgba(255,95,210,.18);
+    }
+    .scroll-fab{
+      position:fixed;
+      right:16px;
+      width:52px;
+      height:52px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:999;
+      font-size:22px;
+      font-weight:900;
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      color:#fff;
+      box-shadow:0 0 18px rgba(88,195,255,.45), 0 0 28px rgba(255,95,210,.25);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .scroll-fab.up{bottom:92px;}
+    .scroll-fab.down{bottom:28px;}
+
+
+    .chip-wrap{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .chip-btn{
+      background:#0b1730;
+      color:var(--text);
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:10px 14px;
+      font-size:13px;
+      font-weight:800;
+      box-shadow:none;
+    }
+    .chip-btn.active{
+      background:linear-gradient(135deg, rgba(88,195,255,.24), rgba(255,95,210,.22));
+      border-color:rgba(88,195,255,.8);
+      box-shadow:0 0 18px rgba(88,195,255,.22), 0 0 22px rgba(255,95,210,.14);
+      color:#fff;
+    }
+    .slider-grid{
+      display:grid;
+      gap:14px;
+    }
+    .slider-row{
+      border:1px solid var(--line);
+      background:#0b1730;
+      border-radius:16px;
+      padding:12px;
+      display:grid;
+      gap:8px;
+    }
+    .slider-top{
+      display:flex;
+      justify-content:space-between;
+      gap:8px;
+      align-items:center;
+    }
+    .slider-value{
+      font-size:12px;
+      font-weight:900;
+      color:#cfe0ff;
+    }
+    input[type="range"]{
+      width:100%;
+      accent-color:#58c3ff;
+      padding:0;
+      background:transparent;
+      border:none;
+    }
+
+    .footer-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <h1>Social Media Fantasy Prompt Generator</h1>
+      <div class="sub">
+        Build glossy 3D social-media fantasy prompts with fillable categories, custom text fields, full prompt assembly logic, compact prompt output, and a negative prompt in one shot.
+      </div>
+      <div class="toolbar">
+        <button id="generateBtn">Generate Prompt</button>
+        <button class="secondary" id="copyCombinedBtn">Copy</button>
+        <button class="warn" id="randomBtn">Random</button>
+        <button class="danger" id="clearBtn">Clear All</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="left">
+
+        
+        <details class="section">
+          <summary>
+            <span>Presets</span>
+            <span class="badge">25 quick fills</span>
+          </summary>
+          <div class="section-body">
+            <div class="pill-note" style="margin-bottom:12px;">Tap a preset to auto-fill the generator.</div>
+            <div class="preset-grid" id="presetGrid"></div>
+          </div>
+        </details>
+
+        <details class="section" open>
+          <summary>
+            <span>1. Character</span>
+            <span class="badge">subject + face + styling</span>
+          </summary>
+          <div class="section-body">
+            <div class="field-grid">
+              <div class="field">
+                <label for="subjectType">Subject Type</label>
+                <select id="subjectType"></select>
+              </div>
+              <div class="field">
+                <label for="ageVibe">Age Vibe</label>
+                <select id="ageVibe"></select>
+              </div>
+              <div class="field">
+                <label for="bodyType">Body Type</label>
+                <select id="bodyType"></select>
+              </div>
+              <div class="field">
+                <label for="skinTone">Skin Tone</label>
+                <select id="skinTone"></select>
+              </div>
+              <div class="field">
+                <label for="faceVibe">Face Vibe</label>
+                <select id="faceVibe"></select>
+              </div>
+              <div class="field">
+                <label for="hairStyle">Hair Style</label>
+                <select id="hairStyle"></select>
+              </div>
+              <div class="field full">
+                <label for="expression">Expression</label>
+                <select id="expression"></select>
+              </div>
+
+              <div class="field full">
+                <label for="customSubjectDescription">Custom Subject Description</label>
+                <textarea id="customSubjectDescription" placeholder="Use when Subject Type = custom. Example: confident plus-size beauty creator with rich editorial glam and bold main-character energy"></textarea>
+              </div>
+              <div class="field full">
+                <label for="customFacialDetails">Custom Facial Details</label>
+                <textarea id="customFacialDetails" placeholder="Example: sharp jawline, glossy lips, soft arched brows, radiant under-eye highlight"></textarea>
+              </div>
+              <div class="field full">
+                <label for="customHairDetails">Custom Hair Details</label>
+                <textarea id="customHairDetails" placeholder="Example: long honey-blonde curls with soft volume and glossy shine"></textarea>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="section">
+          <summary>
+            <span>2. Styling</span>
+            <span class="badge">outfit + shoes + props</span>
+          </summary>
+          <div class="section-body">
+            <div class="field-grid">
+              <div class="field">
+                <label for="wardrobe">Wardrobe</label>
+                <select id="wardrobe"></select>
+              </div>
+              <div class="field">
+                <label for="shoes">Shoes</label>
+                <select id="shoes"></select>
+              </div>
+              <div class="field full">
+                <label for="accessories">Accessories</label>
+                <select id="accessories"></select>
+              </div>
+
+              <div class="field full">
+                <label for="customOutfitDescription">Custom Outfit Description</label>
+                <textarea id="customOutfitDescription" placeholder="Use when Wardrobe = custom. Example: black fitted tee with neon logo text, distressed denim shorts, layered chain necklace"></textarea>
+              </div>
+              <div class="field full">
+                <label for="customAccessories">Custom Accessories</label>
+                <textarea id="customAccessories" placeholder="Use when Accessories = custom. Example: smartphone, ring light, mini camera rig, iced coffee cup"></textarea>
+              </div>
+              <div class="field full">
+                <label for="shirtText">Custom Shirt Text</label>
+                <input id="shirtText" type="text" placeholder='Example: Built to Go Viral' />
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="section">
+          <summary>
+            <span>3. Platform Theme</span>
+            <span class="badge">app + branding + UI</span>
+          </summary>
+          <div class="section-body">
+            <div class="field-grid">
+              <div class="field">
+                <label for="primaryPlatform">Primary Platform</label>
+                <select id="primaryPlatform"></select>
+              </div>
+              <div class="field">
+                <label for="secondaryPlatforms">Secondary Platforms</label>
+                <select id="secondaryPlatforms"></select>
+              </div>
+              <div class="field">
+                <label for="screenType">Screen Type</label>
+                <select id="screenType"></select>
+              </div>
+              <div class="field">
+                <label for="brandingVibe">Branding Vibe</label>
+                <select id="brandingVibe"></select>
+              </div>
+
+              <div class="field full">
+                <label for="customPlatformMix">Custom Platform Mix</label>
+                <textarea id="customPlatformMix" placeholder="Use when Secondary Platforms = custom. Example: TikTok, Instagram, Facebook, YouTube icons floating around a giant creator dashboard"></textarea>
+              </div>
+              <div class="field full">
+                <label for="screenText">Custom Screen Text</label>
+                <input id="screenText" type="text" placeholder='Example: Live Now' />
+              </div>
+              <div class="field full">
+                <label for="sloganText">Custom Slogan Text</label>
+                <input id="sloganText" type="text" placeholder='Example: Boss Creator Energy' />
+              </div>
+              <div class="field full">
+                <label for="customDashboardText">Custom Dashboard Text</label>
+                <textarea id="customDashboardText" placeholder="Example: live comments, follower counts, notification alerts, viral engagement graph climbing upward"></textarea>
+              </div>
+              <div class="field full">
+                <label for="customBrandThemeNotes">Custom Brand/Theme Notes</label>
+                <textarea id="customBrandThemeNotes" placeholder="Example: the scene should feel like a digital product coach brand blowing up online with luxury glam polish"></textarea>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="section">
+          <summary>
+            <span>4. Pose + Scene</span>
+            <span class="badge">action + world + depth</span>
+          </summary>
+          <div class="section-body">
+            <div class="field-grid">
+              <div class="field">
+                <label for="pose">Pose</label>
+                <select id="pose"></select>
+              </div>
+              <div class="field">
+                <label for="bodyAngle">Body Angle</label>
+                <select id="bodyAngle"></select>
+              </div>
+              <div class="field">
+                <label for="handAction">Hand Action</label>
+                <select id="handAction"></select>
+              </div>
+              <div class="field">
+                <label for="movementLevel">Movement Level</label>
+                <select id="movementLevel"></select>
+              </div>
+              <div class="field">
+                <label for="sceneConcept">Scene Concept</label>
+                <select id="sceneConcept"></select>
+              </div>
+              <div class="field">
+                <label for="environment">Environment</label>
+                <select id="environment"></select>
+              </div>
+              <div class="field">
+                <label for="foregroundElements">Foreground Elements</label>
+                <select id="foregroundElements"></select>
+              </div>
+              <div class="field">
+                <label for="backgroundElements">Background Elements</label>
+                <select id="backgroundElements"></select>
+              </div>
+              <div class="field full">
+                <label for="sceneDepth">Scene Depth</label>
+                <select id="sceneDepth"></select>
+              </div>
+
+              <div class="field full">
+                <label for="customSceneConcept">Custom Scene Concept</label>
+                <textarea id="customSceneConcept" placeholder="Use when Scene Concept = custom. Example: stepping out of a giant Instagram reel while glowing analytics orbit around the subject"></textarea>
+              </div>
+              <div class="field full">
+                <label for="customEnvironment">Custom Environment</label>
+                <textarea id="customEnvironment" placeholder="Use when Environment = custom. Example: a futuristic creator studio floating over a nighttime city skyline"></textarea>
+              </div>
+              <div class="field full">
+                <label for="customForegroundElements">Custom Foreground Elements</label>
+                <textarea id="customForegroundElements" placeholder="Use when Foreground Elements = custom. Example: giant glowing keyboard keys, holographic likes, spark trails"></textarea>
+              </div>
+              <div class="field full">
+                <label for="customBackgroundElements">Custom Background Elements</label>
+                <textarea id="customBackgroundElements" placeholder="Use when Background Elements = custom. Example: analytics dashboard, soft city bokeh, follower graph, floating comment cards"></textarea>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="section">
+          <summary>
+            <span>5. Mood + Look</span>
+            <span class="badge">emotion + light + color</span>
+          </summary>
+          <div class="section-body">
+            <div class="field-grid">
+              <div class="field">
+                <label for="mood">Mood</label>
+                <select id="mood"></select>
+              </div>
+              <div class="field">
+                <label for="energyLevel">Energy Level</label>
+                <select id="energyLevel"></select>
+              </div>
+              <div class="field full">
+                <label for="storyVibe">Story Vibe</label>
+                <select id="storyVibe"></select>
+              </div>
+              <div class="field">
+                <label for="lightingStyle">Lighting Style</label>
+                <select id="lightingStyle"></select>
+              </div>
+              <div class="field">
+                <label for="lightDirection">Light Direction</label>
+                <select id="lightDirection"></select>
+              </div>
+              <div class="field">
+                <label for="glowIntensity">Glow Intensity</label>
+                <select id="glowIntensity"></select>
+              </div>
+              <div class="field">
+                <label for="shadowStyle">Shadow Style</label>
+                <select id="shadowStyle"></select>
+              </div>
+              <div class="field">
+                <label for="primaryColors">Primary Colors</label>
+                <select id="primaryColors"></select>
+              </div>
+              <div class="field">
+                <label for="paletteStyle">Palette Style</label>
+                <select id="paletteStyle"></select>
+              </div>
+              <div class="field">
+                <label for="surfaceFinish">Surface Finish</label>
+                <select id="surfaceFinish"></select>
+              </div>
+
+              <div class="field full">
+                <label for="customMood">Custom Mood</label>
+                <textarea id="customMood" placeholder="Use when Mood = custom. Example: victorious, glamorous, scroll-stopping, like a creator who just hit a major milestone"></textarea>
+              </div>
+              <div class="field full">
+                <label for="customLightingNotes">Custom Lighting Notes</label>
+                <textarea id="customLightingNotes" placeholder="Example: strong neon blue from left, pink rim light from back, glossy reflections under the subject"></textarea>
+              </div>
+              <div class="field full">
+                <label for="customColorPalette">Custom Color Palette</label>
+                <textarea id="customColorPalette" placeholder="Example: electric blue, hot pink, purple, cyan, orange accents, glossy black shadows"></textarea>
+              </div>
+              <div class="field full">
+                <label for="customSurfaceFinish">Custom Surface Finish</label>
+                <textarea id="customSurfaceFinish" placeholder="Example: glowing glass, polished acrylic, neon-lit reflective metal"></textarea>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="section">
+          <summary>
+            <span>6. Effects + Camera + Style</span>
+            <span class="badge">motion + framing + render</span>
+          </summary>
+          <div class="section-body">
+            <div class="field-grid">
+              <div class="field">
+                <label for="floatingIcons">Floating Icons</label>
+                <select id="floatingIcons"></select>
+              </div>
+              <div class="field">
+                <label for="motionEffects">Motion Effects</label>
+                <select id="motionEffects"></select>
+              </div>
+              <div class="field">
+                <label for="uiEffects">UI Effects</label>
+                <select id="uiEffects"></select>
+              </div>
+              <div class="field">
+                <label for="specialEffectFocus">Special Effect Focus</label>
+                <select id="specialEffectFocus"></select>
+              </div>
+              <div class="field">
+                <label for="typographyStyle">Typography Style</label>
+                <select id="typographyStyle"></select>
+              </div>
+              <div class="field">
+                <label for="shotType">Shot Type</label>
+                <select id="shotType"></select>
+              </div>
+              <div class="field">
+                <label for="lensFeel">Lens Feel</label>
+                <select id="lensFeel"></select>
+              </div>
+              <div class="field">
+                <label for="compositionStyle">Composition Style</label>
+                <select id="compositionStyle"></select>
+              </div>
+              <div class="field">
+                <label for="aspectRatio">Aspect Ratio</label>
+                <select id="aspectRatio"></select>
+              </div>
+              <div class="field">
+                <label for="artStyle">Art Style</label>
+                <select id="artStyle"></select>
+              </div>
+              <div class="field">
+                <label for="detailLevel">Detail Level</label>
+                <select id="detailLevel"></select>
+              </div>
+              <div class="field">
+                <label for="renderFinish">Render Finish</label>
+                <select id="renderFinish"></select>
+              </div>
+
+              <div class="field full">
+                <label for="customEffects">Custom Effects</label>
+                <textarea id="customEffects" placeholder="Use when any effects field = custom. Example: a storm of glowing likes, comment bubbles, shattered glass, and holographic spark streaks"></textarea>
+              </div>
+              <div class="field full">
+                <label for="customCameraDirection">Custom Camera Direction</label>
+                <textarea id="customCameraDirection" placeholder="Example: dramatic low-angle wide lens with hero framing and layered foreground depth"></textarea>
+              </div>
+              <div class="field full">
+                <label for="customCompositionNotes">Custom Composition Notes</label>
+                <textarea id="customCompositionNotes" placeholder="Example: center the character as the main focal point, with giant app icons framing both sides"></textarea>
+              </div>
+              <div class="field full">
+                <label for="customStoryVibe">Custom Story Vibe</label>
+                <textarea id="customStoryVibe" placeholder="Use when Story Vibe = custom. Example: a creator stepping into her next level with confidence and momentum"></textarea>
+              </div>
+              <div class="field full">
+                <label for="customRenderNotes">Custom Render Notes</label>
+                <textarea id="customRenderNotes" placeholder="Example: crisp details, clean edges, glossy lighting, ad-quality finish, no muddy shadows"></textarea>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="section">
+          <summary>
+            <span>Suno Music Controls</span>
+            <span class="badge">interactive music shaping</span>
+          </summary>
+          <div class="section-body">
+            <div class="field-grid">
+              <div class="field full">
+                <label>Genre Selection</label>
+                <div class="chip-wrap" id="sunoGenreChips"></div>
+              </div>
+              <div class="field full">
+                <label>Style Influence Selection</label>
+                <div class="chip-wrap" id="sunoStyleChips"></div>
+              </div>
+              <div class="field full">
+                <label>Vocal Type</label>
+                <div class="chip-wrap" id="sunoVocalTypeChips"></div>
+              </div>
+              <div class="field full">
+                <label>Audio Settings</label>
+                <div class="slider-grid">
+                  <div class="slider-row">
+                    <div class="slider-top">
+                      <span class="out-label">Weirdness</span>
+                      <span class="slider-value" id="weirdnessValue">20%</span>
+                    </div>
+                    <input id="weirdnessSlider" type="range" min="0" max="100" value="20" />
+                  </div>
+                  <div class="slider-row">
+                    <div class="slider-top">
+                      <span class="out-label">Style Influence</span>
+                      <span class="slider-value" id="styleInfluenceValue">55%</span>
+                    </div>
+                    <input id="styleInfluenceSlider" type="range" min="0" max="100" value="55" />
+                  </div>
+                  <div class="slider-row">
+                    <div class="slider-top">
+                      <span class="out-label">Audio Influence</span>
+                      <span class="slider-value" id="audioInfluenceValue">30%</span>
+                    </div>
+                    <input id="audioInfluenceSlider" type="range" min="0" max="100" value="30" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="section">
+          <summary>
+            <span>Marketing Content Suite</span>
+            <span class="badge">promo + traffic + sales</span>
+          </summary>
+          <div class="section-body">
+            <div class="pill-note">This suite pulls from the main generated prompt automatically and turns the concept into strategic traffic and sales copy.</div>
+          </div>
+        </details>
+
+        <details class="section">
+          <summary>
+            <span>7. Negative Prompt</span>
+            <span class="badge">quality control</span>
+          </summary>
+          <div class="section-body">
+            <div class="field-grid">
+              <div class="field full">
+                <label for="negativePrompt">Negative Prompt</label>
+                <textarea id="negativePrompt"></textarea>
+              </div>
+              <div class="field full">
+                <div class="pill-note">
+                  Tip: leave this as-is unless you want to add extra blocks like “no duplicate people,” “no gibberish text,” or “no deformed app logos.”
+                </div>
+              </div>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div class="right">
+        <div class="output-card">
+          <div class="output-head">
+            <h2>Prompt Output</h2>
+            <div class="footer-row">
+              <span class="badge" id="wordCountBadge">0 words</span>
+              <span class="badge" id="charCountBadge">0 chars</span>
+            </div>
+          </div>
+          <div class="output-body">
+            <div class="out-block">
+              <div class="footer-row" style="justify-content:space-between; margin-bottom:8px;">
+                <div class="out-label">Base Prompt + Negative Prompt</div>
+                <button class="secondary" id="copyBaseNegativeBtn">Copy Base + Negative</button>
+              </div>
+              <div class="out-area" id="baseNegativeOutput"></div>
+            </div>
+            <div class="out-block">
+              <div class="footer-row" style="justify-content:space-between; margin-bottom:8px;">
+                <div class="out-label">Custom GPT Instructions</div>
+                <button class="secondary" id="copyGptInstructionsOnlyBtn">Copy GPT Instructions</button>
+              </div>
+              <div class="out-area" id="gptInstructionsOutput"></div>
+            </div>
+            <div class="out-block">
+              <div class="footer-row" style="justify-content:space-between; margin-bottom:8px;">
+                <div class="out-label">Starter Questions</div>
+                <button class="secondary" id="copyStarterQuestionsBtn">Copy Starter Questions</button>
+              </div>
+              <div class="out-area" id="starterQuestionsOutput"></div>
+            </div>
+            <div class="out-block">
+              <div class="footer-row" style="justify-content:space-between; margin-bottom:8px;">
+                <div class="out-label">Knowledge Section</div>
+                <button class="secondary" id="copyKnowledgeBtn">Copy Knowledge</button>
+              </div>
+              <div class="out-area" id="knowledgeOutput"></div>
+            </div>
+            <div class="out-block">
+              <div class="footer-row" style="justify-content:space-between; margin-bottom:8px;">
+                <div class="out-label">8-Second Animated Video Script</div>
+                <button class="secondary" id="copyAnimatedVideoBtn">Copy Animated Video Script</button>
+              </div>
+              <div class="out-area" id="animatedVideoOutput"></div>
+            </div>
+            <div class="out-block">
+              <div class="footer-row" style="justify-content:space-between; margin-bottom:8px;">
+                <div class="out-label">Suno Jingle</div>
+                <button class="secondary" id="copySunoJingleBtn">Copy Jingle</button>
+              </div>
+              <div class="out-area" id="sunoJingleOutput"></div>
+            </div>
+            <div class="out-block">
+              <div class="footer-row" style="justify-content:space-between; margin-bottom:8px;">
+                <div class="out-label">Suno 30-Second Song</div>
+                <button class="secondary" id="copySuno30Btn">Copy 30-Second Song</button>
+              </div>
+              <div class="out-area" id="suno30Output"></div>
+            </div>
+            <div class="out-block">
+              <div class="footer-row" style="justify-content:space-between; margin-bottom:8px;">
+                <div class="out-label">Suno 1-Minute Song</div>
+                <button class="secondary" id="copySuno60Btn">Copy 1-Minute Song</button>
+              </div>
+              <div class="out-area" id="suno60Output"></div>
+            </div>
+            <div class="out-block">
+              <div class="footer-row" style="justify-content:space-between; margin-bottom:8px;">
+                <div class="out-label">Suggested Suno Settings</div>
+                <button class="secondary" id="copySunoSettingsBtn">Copy Suno Settings</button>
+              </div>
+              <div class="out-area" id="sunoSettingsOutput"></div>
+            </div>
+            <div class="out-block">
+              <div class="footer-row" style="justify-content:space-between; margin-bottom:8px;">
+                <div class="out-label">Captions</div>
+                <button class="secondary" id="copyCaptionsBtn">Copy Captions</button>
+              </div>
+              <div class="out-area" id="captionsOutput"></div>
+            </div>
+            <div class="out-block">
+              <div class="footer-row" style="justify-content:space-between; margin-bottom:8px;">
+                <div class="out-label">Hashtags</div>
+                <button class="secondary" id="copyHashtagsBtn">Copy Hashtags</button>
+              </div>
+              <div class="out-area" id="hashtagsOutput"></div>
+            </div>
+            <div class="out-block">
+              <div class="footer-row" style="justify-content:space-between; margin-bottom:8px;">
+                <div class="out-label">SEO Keywords</div>
+                <button class="secondary" id="copySeoKeywordsBtn">Copy SEO Keywords</button>
+              </div>
+              <div class="out-area" id="seoKeywordsOutput"></div>
+            </div>
+            <div class="out-block">
+              <div class="footer-row" style="justify-content:space-between; margin-bottom:8px;">
+                <div class="out-label">Calls to Action</div>
+                <button class="secondary" id="copyCtasBtn">Copy Calls to Action</button>
+              </div>
+              <div class="out-area" id="ctasOutput"></div>
+            </div>
+            <div class="out-block">
+              <div class="footer-row" style="justify-content:space-between; margin-bottom:8px;">
+                <div class="out-label">Email Promo Copy</div>
+                <button class="secondary" id="copyEmailPromoBtn">Copy Email Promo</button>
+              </div>
+              <div class="out-area" id="emailPromoOutput"></div>
+            </div>
+            <div class="out-block">
+              <div class="footer-row" style="justify-content:space-between; margin-bottom:8px;">
+                <div class="out-label">Pinterest Promo Copy</div>
+                <button class="secondary" id="copyPinterestPromoBtn">Copy Pinterest Promo</button>
+              </div>
+              <div class="out-area" id="pinterestPromoOutput"></div>
+            </div>
+            <div class="out-block">
+              <div class="footer-row" style="justify-content:space-between; margin-bottom:8px;">
+                <div class="out-label">TikTok Promo Copy</div>
+                <button class="secondary" id="copyTikTokPromoBtn">Copy TikTok Promo</button>
+              </div>
+              <div class="out-area" id="tiktokPromoOutput"></div>
+            </div>
+            <div class="out-block">
+              <div class="footer-row" style="justify-content:space-between; margin-bottom:8px;">
+                <div class="out-label">Facebook Promo Copy</div>
+                <button class="secondary" id="copyFacebookPromoBtn">Copy Facebook Promo</button>
+              </div>
+              <div class="out-area" id="facebookPromoOutput"></div>
+            </div>
+            <div class="out-block">
+              <div class="footer-row" style="justify-content:space-between; margin-bottom:8px;">
+                <div class="out-label">Instagram Promo Copy</div>
+                <button class="secondary" id="copyInstagramPromoBtn">Copy Instagram Promo</button>
+              </div>
+              <div class="out-area" id="instagramPromoOutput"></div>
+            </div>
+            <div class="out-block">
+              <div class="footer-row" style="justify-content:space-between; margin-bottom:8px;">
+                <div class="out-label">YouTube Promo Copy</div>
+                <button class="secondary" id="copyYouTubePromoBtn">Copy YouTube Promo</button>
+              </div>
+              <div class="out-area" id="youtubePromoOutput"></div>
+            </div>
+            <div class="out-block">
+              <div class="footer-row" style="justify-content:space-between; margin-bottom:8px;">
+                <div class="out-label">Ad Copy</div>
+                <button class="secondary" id="copyAdCopyBtn">Copy Ad Copy</button>
+              </div>
+              <div class="out-area" id="adCopyOutput"></div>
+            </div>
+            <div class="tiny">
+              Logic rules: if a dropdown is set to <strong>custom</strong>, the matching custom text field is used. If the custom field is blank, that phrase gets skipped instead of dumping ugly placeholder junk into the prompt.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const options = {
+      "subjectType": [
+            "none",
+            "female",
+            "male",
+            "person",
+            "adult creator",
+            "affiliate marketer",
+            "artist",
+            "beauty creator",
+            "beauty entrepreneur",
+            "business owner",
+            "coach",
+            "content creator",
+            "course creator",
+            "crafter",
+            "digital product seller",
+            "educator",
+            "entrepreneur",
+            "faceless avatar",
+            "faceless brand owner",
+            "fashion creator",
+            "fitness creator",
+            "founder",
+            "grandmother creator",
+            "influencer",
+            "lifestyle creator",
+            "live seller",
+            "maker",
+            "mentor",
+            "micro influencer",
+            "mom creator",
+            "motivational speaker",
+            "online seller",
+            "personal brand creator",
+            "podcaster",
+            "small business owner",
+            "social media coach",
+            "speaker",
+            "streamer",
+            "teacher",
+            "wellness creator"
+      ],
+      "ageVibe": [
+            "none",
+            "20s",
+            "30s",
+            "40+",
+            "50+",
+            "60+",
+            "ageless editorial",
+            "bold mature",
+            "classic beauty",
+            "clean and polished",
+            "confident seasoned",
+            "elegant adult",
+            "energetic adult",
+            "fresh-faced adult",
+            "glam mature",
+            "golden-age glam",
+            "grown and grounded",
+            "high-fashion mature",
+            "mature polished",
+            "midlife glow-up",
+            "modern adult",
+            "older and stylish",
+            "playful adult",
+            "premium mature",
+            "refined adult",
+            "seasoned creator",
+            "sharp and youthful",
+            "silver-era glam",
+            "soft mature beauty",
+            "sophisticated adult",
+            "stylish elder",
+            "timeless beauty",
+            "trendy adult",
+            "vibrant mature",
+            "warm adult",
+            "wise and bold",
+            "young adult",
+            "young professional",
+            "youthful glow",
+            "zen mature"
+      ],
+      "bodyType": [
+            "none",
+            "apple-shaped",
+            "athletic",
+            "average",
+            "balanced frame",
+            "broad frame",
+            "compact build",
+            "curvy",
+            "defined build",
+            "fit and toned",
+            "full figure",
+            "glamorous curvy",
+            "hourglass",
+            "lean build",
+            "lean street build",
+            "long-limbed",
+            "medium build",
+            "model-proportioned",
+            "pear-shaped",
+            "petite",
+            "plus-size",
+            "powerful build",
+            "rectangle frame",
+            "rounded figure",
+            "shapely frame",
+            "slim",
+            "slim thick",
+            "soft build",
+            "soft curvy",
+            "solid build",
+            "stocky",
+            "strong frame",
+            "tall",
+            "thick",
+            "toned frame",
+            "voluptuous",
+            "wide-hipped",
+            "willowy",
+            "womanly build",
+            "youthful frame"
+      ],
+      "skinTone": [
+            "none",
+            "almond",
+            "amber",
+            "beige",
+            "bronze",
+            "brown",
+            "caramel",
+            "chestnut",
+            "cocoa",
+            "cool undertone",
+            "copper",
+            "cream",
+            "deep brown",
+            "deep ebony",
+            "ebony",
+            "espresso",
+            "fair",
+            "golden tan",
+            "hazelnut",
+            "honey",
+            "ivory",
+            "light beige",
+            "mahogany",
+            "medium brown",
+            "mocha",
+            "neutral undertone",
+            "nutmeg",
+            "olive",
+            "peach",
+            "porcelain",
+            "rich melanin",
+            "rosy beige",
+            "sandy tan",
+            "soft bronze",
+            "sun-kissed",
+            "tan",
+            "toffee",
+            "warm beige",
+            "warm undertone",
+            "wheat"
+      ],
+      "faceVibe": [
+            "none",
+            "angelic",
+            "beauty campaign look",
+            "bold glam",
+            "camera-ready",
+            "classic beauty",
+            "clean beauty",
+            "clean skin finish",
+            "commercial beauty",
+            "defined features",
+            "doll-like",
+            "editorial",
+            "elegant",
+            "expressive",
+            "fresh-faced",
+            "glamorous",
+            "glossy beauty",
+            "high-fashion",
+            "lifted features",
+            "luminous",
+            "main-character face",
+            "mature",
+            "natural",
+            "photogenic",
+            "polished",
+            "radiant",
+            "realistic",
+            "refined",
+            "sculpted",
+            "sharp-featured",
+            "sleek beauty",
+            "soft beauty",
+            "soft glam",
+            "storybook pretty",
+            "striking",
+            "timeless",
+            "ultra-feminine",
+            "ultra-masculine",
+            "vibrant",
+            "youthful"
+      ],
+      "hairStyle": [
+            "none",
+            "afro",
+            "bald",
+            "beach waves",
+            "blunt bob",
+            "bob cut",
+            "box braids",
+            "braided bun",
+            "braided ponytail",
+            "braids",
+            "bussdown",
+            "buzzcut",
+            "cornrows",
+            "curly hair",
+            "curly updo",
+            "finger waves",
+            "half-up half-down",
+            "hat",
+            "high ponytail",
+            "hijab",
+            "knotless braids",
+            "layered blowout",
+            "locs",
+            "long waves",
+            "low bun",
+            "low ponytail",
+            "messy bun",
+            "pixie cut",
+            "press curls",
+            "short natural hair",
+            "short waves",
+            "silk press",
+            "sleek bob",
+            "sleek ponytail",
+            "soft locs",
+            "space buns",
+            "straight hair",
+            "two-strand twists",
+            "voluminous curls",
+            "wet-look waves"
+      ],
+      "expression": [
+            "none",
+            "amazed",
+            "bossed-up",
+            "calm",
+            "celebratory",
+            "confident",
+            "cool stare",
+            "curious",
+            "determined",
+            "dreamy",
+            "empowered",
+            "excited",
+            "fearless",
+            "fierce",
+            "focused",
+            "gentle smile",
+            "half-smile reveal",
+            "joyful",
+            "luxurious confidence",
+            "main-character energy",
+            "menacing calm",
+            "playful",
+            "poised",
+            "powerful",
+            "proud",
+            "radiant",
+            "relaxed",
+            "serious",
+            "shocked",
+            "side smirk",
+            "silent power",
+            "soft smile",
+            "stone-faced intensity",
+            "strong gaze",
+            "sweet smile",
+            "triumphant",
+            "untouchable presence",
+            "warm smile",
+            "wild excitement",
+            "zen"
+      ],
+      "wardrobe": [
+            "none",
+            "all-black luxe",
+            "athleisure",
+            "beauty creator fit",
+            "blazer look",
+            "bold monochrome",
+            "boss casual",
+            "business casual",
+            "casual glam",
+            "chic blazer set",
+            "clean creator outfit",
+            "clubwear glam",
+            "cozy sleepwear",
+            "creator outfit",
+            "cropped jacket look",
+            "denim and heels",
+            "denim set",
+            "designer casual",
+            "digital boss look",
+            "edgy fashion",
+            "fashion-forward casual",
+            "glam casual",
+            "hoodie and sneakers",
+            "luxury chic",
+            "metallic fashion",
+            "minimal chic",
+            "modest fashion",
+            "night-out glam",
+            "oversized streetwear",
+            "power suit",
+            "resort glam",
+            "romantic fashion",
+            "sequined statement look",
+            "sleek bodycon fit",
+            "sport luxe",
+            "streetwear",
+            "structured couture",
+            "summer casual",
+            "techwear glam",
+            "y2k luxe"
+      ],
+      "shoes": [
+            "none",
+            "ankle boots",
+            "barefoot",
+            "block heels",
+            "chunky sneakers",
+            "combat boots",
+            "combat heels",
+            "cowboy boots",
+            "designer sandals",
+            "dress shoes",
+            "flats",
+            "glam sneakers",
+            "glossy boots",
+            "heeled boots",
+            "heels",
+            "high-top sneakers",
+            "kitten heels",
+            "lace-up boots",
+            "loafers",
+            "luxury loafers",
+            "metallic sneakers",
+            "mules",
+            "platform boots",
+            "platform heels",
+            "platform sneakers",
+            "pointed heels",
+            "pumps",
+            "retro sneakers",
+            "running shoes",
+            "sandals",
+            "sleek pumps",
+            "slide sandals",
+            "sock boots",
+            "stilettos",
+            "strappy heels",
+            "street sneakers",
+            "thigh-high boots",
+            "trainers",
+            "wedge heels",
+            "white sneakers"
+      ],
+      "accessories": [
+            "none",
+            "none",
+            "backpack",
+            "beauty bag",
+            "bracelets",
+            "camera rig",
+            "clipboard",
+            "crossbody bag",
+            "designer sunglasses",
+            "diamond watch",
+            "drink cup",
+            "earbuds",
+            "glam handbag",
+            "headphones",
+            "hoop earrings",
+            "iced coffee",
+            "jewelry",
+            "laptop",
+            "lav mic",
+            "luxury tote",
+            "microphone",
+            "mini tripod",
+            "nameplate necklace",
+            "neck scarf",
+            "notebook",
+            "phone gimbal",
+            "podcast mic",
+            "portable light",
+            "press badge",
+            "ring light",
+            "smart watch",
+            "smartphone",
+            "stacked rings",
+            "statement earrings",
+            "tablet",
+            "tripod",
+            "vlog camera",
+            "waist bag",
+            "water bottle",
+            "wireless mic"
+      ],
+      "primaryPlatform": [
+            "none",
+            "all platforms",
+            "Amazon Live",
+            "Beacons",
+            "blog platform",
+            "brand website",
+            "Clapper",
+            "community platform",
+            "course platform",
+            "creator dashboard",
+            "digital storefront",
+            "Discord",
+            "email list",
+            "Etsy",
+            "Facebook",
+            "fan page",
+            "Instagram",
+            "Kajabi",
+            "landing page",
+            "link in bio",
+            "LinkedIn",
+            "live shopping app",
+            "membership site",
+            "online academy",
+            "Pinterest",
+            "podcast platform",
+            "product page",
+            "sales page",
+            "Shopify",
+            "Snapchat",
+            "social media mix",
+            "Substack",
+            "Telegram",
+            "Threads",
+            "TikTok",
+            "Twitch",
+            "virtual summit",
+            "webinar room",
+            "WhatsApp",
+            "YouTube"
+      ],
+      "secondaryPlatforms": [
+            "none",
+            "Amazon Live icons",
+            "Beacons icons",
+            "Clapper icons",
+            "comment bubbles",
+            "community icons",
+            "dashboard widgets",
+            "Discord icons",
+            "email icons",
+            "Etsy icons",
+            "Facebook icons",
+            "follower badges",
+            "growth symbols",
+            "hashtag symbols",
+            "Instagram icons",
+            "Kajabi icons",
+            "LinkedIn icons",
+            "live badges",
+            "metric badges",
+            "notification bubbles",
+            "Pinterest icons",
+            "product icons",
+            "reaction icons",
+            "sales symbols",
+            "Shopify icons",
+            "Snapchat icons",
+            "social badges",
+            "sparkle symbols",
+            "storefront icons",
+            "Substack icons",
+            "Telegram icons",
+            "Threads icons",
+            "TikTok icons",
+            "traffic symbols",
+            "Twitch icons",
+            "UI icons",
+            "video symbols",
+            "viral symbols",
+            "website icons",
+            "YouTube icons"
+      ],
+      "screenType": [
+            "none",
+            "analytics board",
+            "app home screen",
+            "brand profile",
+            "checkout page",
+            "comment thread",
+            "community feed",
+            "content calendar",
+            "dashboard graphs",
+            "creator dashboard",
+            "dm screen",
+            "engagement panel",
+            "follower dashboard",
+            "landing page",
+            "leaderboard",
+            "link in bio page",
+            "live shopping screen",
+            "live stream",
+            "member portal",
+            "message inbox",
+            "metrics screen",
+            "mobile storefront",
+            "notification panel",
+            "phone lock screen",
+            "podcast page",
+            "post screen",
+            "product page",
+            "profile page",
+            "sales dashboard",
+            "social feed",
+            "stats panel",
+            "story viewer",
+            "stream overlay",
+            "task board",
+            "thumbnail wall",
+            "trend dashboard",
+            "upload screen",
+            "video editor",
+            "viral tracker",
+            "web dashboard"
+      ],
+      "brandingVibe": [
+            "none",
+            "authority builder",
+            "bold creator brand",
+            "boss creator",
+            "brand authority",
+            "brand glow-up",
+            "community leader",
+            "content empire",
+            "content machine",
+            "conversion-driven brand",
+            "creator CEO",
+            "creator growth",
+            "creator luxury",
+            "digital product seller",
+            "elevated personal brand",
+            "engagement boost",
+            "female founder energy",
+            "glam business coach",
+            "high-ticket mentor",
+            "influencer energy",
+            "lifestyle influencer",
+            "luxury mentor brand",
+            "magnetic brand vibe",
+            "main-character brand",
+            "money-making creator",
+            "motivational coach",
+            "online business glow-up",
+            "personal brand growth",
+            "premium coach brand",
+            "premium product seller",
+            "professional creator",
+            "sales-focused brand",
+            "social media coach",
+            "soft luxury brand",
+            "thought leader",
+            "trusted educator",
+            "viral success",
+            "wellness authority",
+            "women-over-40 brand",
+            "youthful energy"
+      ],
+      "pose": [
+            "none",
+            "arms raised",
+            "camera-ready pose",
+            "cross-legged sit",
+            "editorial hand pose",
+            "filming content",
+            "floating pose",
+            "hands on hips",
+            "high-energy dance pose",
+            "holding phone up",
+            "jumping",
+            "kneeling",
+            "leaning forward",
+            "looking back pose",
+            "lounging",
+            "mid-stride walk",
+            "one-leg pop pose",
+            "phone selfie pose",
+            "posing confidently",
+            "power stance",
+            "punching toward camera",
+            "reaching outward",
+            "resting pose",
+            "running pose",
+            "seated throne pose",
+            "shoulder turn pose",
+            "sitting",
+            "sleeping",
+            "soft feminine pose",
+            "squatting",
+            "standing",
+            "stepping out of a screen",
+            "stepping through portal",
+            "strong masculine pose",
+            "typing pose",
+            "victory pose",
+            "walking forward",
+            "waving",
+            "working at laptop",
+            "yoga pose"
+      ],
+      "bodyAngle": [
+            "none",
+            "3/4 angle",
+            "back view",
+            "bird's-eye angle",
+            "centered symmetry angle",
+            "cinematic canted angle",
+            "close portrait angle",
+            "close side angle",
+            "diagonal hero angle",
+            "dramatic front angle",
+            "dynamic tilt",
+            "eye-level",
+            "fashion runway angle",
+            "front-facing",
+            "full side profile",
+            "full-body back angle",
+            "full-body front angle",
+            "full-body side angle",
+            "hero low angle",
+            "high angle",
+            "low-angle hero shot",
+            "mid-twist angle",
+            "motion blur angle",
+            "over-the-shoulder",
+            "portrait straight-on",
+            "profile turn",
+            "rear 3/4 angle",
+            "seated low angle",
+            "slight angle",
+            "soft side angle",
+            "standing high angle",
+            "straight-on",
+            "three-quarter back",
+            "tilted portrait angle",
+            "top-down",
+            "upward angle",
+            "viewer-facing angle",
+            "waist-level angle",
+            "wide perspective",
+            "worm's-eye view"
+      ],
+      "handAction": [
+            "none",
+            "adjusting sunglasses",
+            "arms crossed",
+            "arms raised",
+            "blowing kiss",
+            "double peace sign",
+            "fist forward",
+            "framing face",
+            "hands clasped",
+            "hands in pockets",
+            "holding bag",
+            "holding camera",
+            "holding clipboard",
+            "holding coffee",
+            "holding laptop",
+            "holding microphone",
+            "holding phone",
+            "holding product",
+            "holding ring light",
+            "holding stylus",
+            "holding tablet",
+            "open palm pose",
+            "peace sign",
+            "pointing",
+            "pointing at screen",
+            "pointing upward",
+            "pouring drink",
+            "pulling viewer in",
+            "reaching toward viewer",
+            "resting on hip",
+            "scrolling screen",
+            "showing analytics",
+            "showing product",
+            "snapping fingers",
+            "touching hair",
+            "touching necklace",
+            "touching screen",
+            "typing",
+            "waving",
+            "writing notes"
+      ],
+      "movementLevel": [
+            "none",
+            "action freeze frame",
+            "bold motion",
+            "calm stillness",
+            "camera-shake energy",
+            "controlled motion",
+            "dance energy",
+            "dramatic action",
+            "dramatic leap",
+            "editorial stillness",
+            "explosive motion",
+            "floating",
+            "flying particles motion",
+            "gentle motion",
+            "glide motion",
+            "high-energy motion",
+            "light motion",
+            "medium action",
+            "mid-jump action",
+            "motion blur feel",
+            "poised and still",
+            "power walk energy",
+            "quick movement",
+            "relaxed motion",
+            "running energy",
+            "slow elegant motion",
+            "soft cinematic drift",
+            "soft floating motion",
+            "soft relaxed motion",
+            "stepping through portal",
+            "still and poised",
+            "strong forward motion",
+            "subtle movement",
+            "suspended in air",
+            "swirling motion",
+            "triumphant action",
+            "victory burst",
+            "walking motion",
+            "wild action",
+            "zero motion"
+      ],
+      "sceneConcept": [
+            "none",
+            "breaking through a mobile screen",
+            "breaking through a profile card",
+            "building content empire in a neon studio",
+            "emerging from a post screen",
+            "emerging from social media screen",
+            "floating above a city with app effects",
+            "floating in a follower galaxy",
+            "holding a phone with dashboard behind them",
+            "holding a viral graph",
+            "hosting a live show from a floating stage",
+            "inside a comment bubble storm",
+            "inside a content planner board",
+            "inside a giant creator dashboard",
+            "inside a giant ring light scene",
+            "inside a glowing content calendar world",
+            "inside a luxury app world",
+            "inside a social media control room",
+            "on a floating platform of app icons",
+            "on a glowing sales page",
+            "on top of giant phone",
+            "posing in front of giant analytics screens",
+            "riding a wave of likes",
+            "rising out of a livestream panel",
+            "running through a tunnel of notifications",
+            "sitting in a creator throne room",
+            "sitting on glowing app cube",
+            "sleeping on smartphone bed",
+            "standing in front of giant dashboard wall",
+            "standing inside a profile page",
+            "standing on a platform of charts",
+            "standing on giant keyboard",
+            "stepping into a digital storefront",
+            "stepping out of cracked phone",
+            "stepping through a video thumbnail",
+            "surrounded by giant app icons",
+            "walking across giant keyboard keys",
+            "walking through a portal of social reactions",
+            "working from inside a giant phone"
+      ],
+      "environment": [
+            "none",
+            "abstract glowing void",
+            "airport lounge",
+            "bedroom",
+            "brand studio",
+            "city rooftop",
+            "cozy office",
+            "creator classroom",
+            "creator mansion",
+            "dashboard control room",
+            "desk tabletop",
+            "digital sky world",
+            "dream cloudscape",
+            "floating city",
+            "futuristic digital world",
+            "giant keyboard world",
+            "glam studio",
+            "home office",
+            "luxury office",
+            "miniature city",
+            "modern loft",
+            "mountaintop overlook",
+            "neon studio",
+            "night city skyline",
+            "penthouse interior",
+            "podcast room",
+            "product shelf set",
+            "rainy city street",
+            "retro arcade world",
+            "rooftop",
+            "social media office",
+            "space-like tech chamber",
+            "sparkling void",
+            "stage set",
+            "sunset skyline",
+            "tech fantasy set",
+            "urban alley",
+            "viral tunnel",
+            "warehouse studio",
+            "window-lit workspace"
+      ],
+      "foregroundElements": [
+            "none",
+            "analytics bars",
+            "app icon cubes",
+            "brand props",
+            "broken glass",
+            "camera gear",
+            "comment cards",
+            "confetti strips",
+            "creator tools",
+            "custom product boxes",
+            "dashboard panels",
+            "emoji bubbles",
+            "floating emojis",
+            "floating hearts",
+            "follower counters",
+            "giant keyboard keys",
+            "giant phone",
+            "glam sparkles",
+            "glowing charts",
+            "glowing stairs",
+            "holographic icons",
+            "light ribbons",
+            "like icons",
+            "microphones",
+            "money sparkles",
+            "notification cards",
+            "product mockups",
+            "reaction bubbles",
+            "ring lights",
+            "sales icons",
+            "screen shards",
+            "social media notifications",
+            "spark trails",
+            "spotlight beams",
+            "stars",
+            "text bubbles",
+            "traffic arrows",
+            "video thumbnails",
+            "viral badges",
+            "wireframe panels"
+      ],
+      "backgroundElements": [
+            "none",
+            "analytics dashboard",
+            "app interface",
+            "aurora glow",
+            "billboard screens",
+            "bokeh lights",
+            "city skyline",
+            "color streaks",
+            "comment clouds",
+            "community wall",
+            "dashboard tiles",
+            "digital stars",
+            "floating profile cards",
+            "follower map",
+            "glowing horizon",
+            "growth graphs",
+            "holograms",
+            "landing page visuals",
+            "light tunnels",
+            "live comments",
+            "metric graphs",
+            "mini buildings",
+            "money graphs",
+            "neon streaks",
+            "notification panels",
+            "phone UI wall",
+            "podcast graphics",
+            "profile page layout",
+            "sales charts",
+            "skyline",
+            "social media feed",
+            "soft blur city lights",
+            "sparkles",
+            "stars",
+            "stream overlays",
+            "task board",
+            "trend charts",
+            "viral counters",
+            "website panels",
+            "window city lights"
+      ],
+      "sceneDepth": [
+            "none",
+            "app-world depth",
+            "atmospheric depth",
+            "background-heavy depth",
+            "brand-stage depth",
+            "center-weighted depth",
+            "cinematic poster depth",
+            "city-scale depth",
+            "close cinematic depth",
+            "deep layered scene",
+            "designer campaign scale",
+            "epic poster composition",
+            "floating layered depth",
+            "foreground-heavy depth",
+            "full-body wide scene",
+            "grand cinematic scene",
+            "hero depth",
+            "immersive scale",
+            "large-scale fantasy scene",
+            "layered cinematic depth",
+            "massive vertical scene",
+            "medium scene depth",
+            "mid-shot environment",
+            "multi-layer perspective",
+            "narrow focus depth",
+            "panoramic visual depth",
+            "portrait depth",
+            "premium ad scale",
+            "runway depth",
+            "screen-break depth",
+            "shallow depth",
+            "spacious scene",
+            "stacked visual layers",
+            "surrounding depth",
+            "tight portrait setup",
+            "towering scale scene",
+            "tunnel depth",
+            "ultra deep scene",
+            "vortex depth",
+            "wide environment depth"
+      ],
+      "mood": [
+            "none",
+            "ambitious",
+            "bold",
+            "bossed-up",
+            "calm",
+            "celebratory",
+            "cozy",
+            "dramatic",
+            "dreamy",
+            "electric",
+            "elevated",
+            "empowering",
+            "fierce",
+            "futuristic",
+            "glamorous",
+            "hopeful",
+            "inspirational",
+            "joyful",
+            "luxurious",
+            "magical",
+            "motivational",
+            "mysterious",
+            "playful",
+            "polished",
+            "powerful",
+            "premium",
+            "radiant",
+            "rebellious",
+            "romantic",
+            "scroll-stopping",
+            "serene",
+            "soft luxe",
+            "triumphant",
+            "uplifting",
+            "vibrant",
+            "viral",
+            "warm",
+            "whimsical",
+            "wild",
+            "zen"
+      ],
+      "energyLevel": [
+            "none",
+            "balanced",
+            "bold and loud",
+            "boss energy",
+            "calm but powerful",
+            "celebration energy",
+            "clean and elevated",
+            "controlled intensity",
+            "dreamlike energy",
+            "electric",
+            "elegant",
+            "explosive",
+            "fast-paced",
+            "fierce",
+            "focused intensity",
+            "gentle",
+            "glam high energy",
+            "grounded",
+            "high energy",
+            "light and airy",
+            "magnetic",
+            "medium energy",
+            "minimal energy",
+            "playful buzz",
+            "polished and confident",
+            "power walk energy",
+            "quiet luxury",
+            "radiant",
+            "relaxed",
+            "slow cinematic",
+            "soft energy",
+            "strong momentum",
+            "subtle tension",
+            "supercharged",
+            "triumphant burst",
+            "upbeat",
+            "vibrant",
+            "whimsical",
+            "wild",
+            "zero gravity energy"
+      ],
+      "storyVibe": [
+            "none",
+            "a creator breakthrough story",
+            "a digital empire story",
+            "a feminine power story",
+            "a glam success moment",
+            "a reinvention arc",
+            "a social media fantasy",
+            "a viral moment",
+            "authority building",
+            "brand comeback",
+            "brand leadership",
+            "brand power",
+            "community rise",
+            "content growth",
+            "content queen era",
+            "conversion win",
+            "creator success",
+            "digital freedom journey",
+            "digital overload",
+            "dream lifestyle",
+            "engagement explosion",
+            "first big win",
+            "founder journey",
+            "glow-up era",
+            "lifestyle dream",
+            "luxury creator life",
+            "main-character comeback",
+            "online fame",
+            "overnight momentum",
+            "personal brand rise",
+            "premium business growth",
+            "product launch win",
+            "sales celebration",
+            "small business glow-up",
+            "social media fantasy",
+            "soft-power success",
+            "thought leader rise",
+            "viral campaign energy",
+            "wealth-coded creator story",
+            "women-over-40 creator rise"
+      ],
+      "lightingStyle": [
+            "none",
+            "backlit sunset glow",
+            "beauty box lighting",
+            "billboard light",
+            "chrome reflections",
+            "cinematic rim light",
+            "clean studio light",
+            "color-gel lighting",
+            "dreamy soft glow",
+            "dreamy twilight glow",
+            "editorial flash",
+            "glassy glow",
+            "glitter glow",
+            "glossy screen light",
+            "glowing screen light",
+            "golden hour light",
+            "high-contrast editorial light",
+            "holographic glow",
+            "laser glow",
+            "light beam effects",
+            "luxury glam lighting",
+            "mixed neon glow",
+            "moody side light",
+            "neon blue and pink",
+            "nightclub glow",
+            "pastel glow",
+            "phone-screen glow",
+            "purple club light",
+            "rainy city reflections",
+            "ring light glow",
+            "soft daylight",
+            "softbox glam",
+            "sparkle-lit glow",
+            "spotlight glam",
+            "studio glam lighting",
+            "sunset glow",
+            "underglow neon",
+            "warm bedside light",
+            "warm studio glow",
+            "window light"
+      ],
+      "lightDirection": [
+            "none",
+            "45-degree light",
+            "backlit halo",
+            "beauty-front light",
+            "behind-left glow",
+            "behind-right glow",
+            "bottom-lit",
+            "center front light",
+            "cinematic side glow",
+            "cross-lit",
+            "diagonal light",
+            "editorial split light",
+            "front-lit",
+            "full wrap light",
+            "hero front glow",
+            "left side-lit",
+            "mixed neon glow",
+            "multi-directional",
+            "one-sided drama light",
+            "overhead glam light",
+            "rear glow",
+            "right side-lit",
+            "rim-lit",
+            "screen-lit front",
+            "side-lit",
+            "soft ambient wrap",
+            "soft backlight",
+            "soft front glow",
+            "spotlight center",
+            "stage-left lighting",
+            "stage-right lighting",
+            "sunset backlight",
+            "three-point lighting",
+            "top-lit",
+            "under-screen glow",
+            "underglow",
+            "upstage glow",
+            "wide ambient light",
+            "window-side glow",
+            "wraparound glow"
+      ],
+      "glowIntensity": [
+            "none",
+            "ambient glow",
+            "barely glowing",
+            "bold glow",
+            "bright",
+            "chrome glow",
+            "cloud glow",
+            "cool glow",
+            "dim glow",
+            "dream glow",
+            "edge glow",
+            "electric",
+            "gentle glow",
+            "halo glow",
+            "hard glow",
+            "high glow",
+            "holographic glow",
+            "intense",
+            "laser bright",
+            "low glow",
+            "maximum glow",
+            "medium",
+            "medium-high",
+            "minimal",
+            "neon flare",
+            "premium glow",
+            "pulsing",
+            "radiant",
+            "reflective glow",
+            "screen bright",
+            "soft",
+            "soft aura",
+            "spark glow",
+            "stage glow",
+            "strong",
+            "subtle",
+            "super glow",
+            "ultra-glow",
+            "vivid glow",
+            "warm glow"
+      ],
+      "shadowStyle": [
+            "none",
+            "airbrushed shadows",
+            "ambient shadows",
+            "bold shadows",
+            "clean studio shadows",
+            "contrasty shadows",
+            "crisp cinematic shadows",
+            "deep dramatic shadows",
+            "diffused shadows",
+            "dreamy low-contrast shadows",
+            "editorial shadows",
+            "faded shadows",
+            "feathered shadows",
+            "glassy reflections",
+            "glowing reflections",
+            "hard-edged shadows",
+            "high-contrast shadows",
+            "long shadows",
+            "luxury shadows",
+            "minimal shadows",
+            "moody shadows",
+            "naturalistic shadows",
+            "neon edge shadows",
+            "polished reflections",
+            "reflective floor shadows",
+            "rim-shadow effects",
+            "screen glow shadows",
+            "sharp shadows",
+            "silky shadows",
+            "soft shadows",
+            "split-light shadows",
+            "spotlight shadows",
+            "stylized shadows",
+            "subtle reflections",
+            "under-light shadows",
+            "urban night shadows",
+            "velvety dark shadows",
+            "warm lamp shadows",
+            "wet-floor reflections",
+            "wide soft shadows"
+      ],
+      "primaryColors": [
+            "none",
+            "black and chrome",
+            "black gold and blue",
+            "blue pink and orange",
+            "blush and cream",
+            "champagne and ivory",
+            "champagne pink and white",
+            "chrome and cyan",
+            "cool neon mix",
+            "copper and teal",
+            "electric blue and hot pink",
+            "emerald and gold",
+            "gold black and blue",
+            "ice blue and lavender",
+            "jet black and neon pink",
+            "lavender and silver",
+            "lime and aqua",
+            "magenta and violet",
+            "midnight blue and gold",
+            "mint and lilac",
+            "monochrome black",
+            "orange and teal",
+            "pastel rainbow",
+            "peach and aqua",
+            "pearl and rose",
+            "pink and purple",
+            "plum and neon blue",
+            "purple and cyan",
+            "red blue and magenta",
+            "rose gold and blush",
+            "royal blue and gold",
+            "ruby and gold",
+            "silver and black",
+            "soft beige and gold",
+            "sunset coral and violet",
+            "teal and pink",
+            "turquoise and gold",
+            "warm sunset neon",
+            "white and platinum",
+            "yellow and pink"
+      ],
+      "paletteStyle": [
+            "none",
+            "beauty-campaign palette",
+            "bold glam palette",
+            "boss-business palette",
+            "bright commercial color",
+            "candy color pop",
+            "clean modern glow",
+            "color-blocked neon",
+            "cool editorial palette",
+            "dark moody tech",
+            "digital fantasy palette",
+            "dreamy pastel luxe",
+            "editorial contrast",
+            "electric festival color",
+            "glam beauty palette",
+            "glossy luxury palette",
+            "high contrast neon",
+            "high-fashion color story",
+            "holographic color wash",
+            "icy glow palette",
+            "light and airy palette",
+            "liquid chrome palette",
+            "loud neon palette",
+            "low-saturation luxe",
+            "metallic pop palette",
+            "midnight glam palette",
+            "minimal luxury palette",
+            "modern pop palette",
+            "monochrome glow",
+            "premium ad palette",
+            "rich jewel tones",
+            "romantic glow palette",
+            "runway-glow palette",
+            "soft dreamy pastel",
+            "soft luxe neutral palette",
+            "sunset fantasy palette",
+            "techno-pop palette",
+            "ultra-saturated glam",
+            "vibrant creator palette",
+            "warm glam palette"
+      ],
+      "surfaceFinish": [
+            "none",
+            "acrylic shine",
+            "brushed chrome",
+            "brushed metal",
+            "buttery matte",
+            "chrome glow",
+            "clean matte",
+            "clear glass",
+            "crystal glass",
+            "diamond sparkle",
+            "editorial gloss",
+            "frosted glass",
+            "gel shine",
+            "glassy",
+            "glossy",
+            "high polish",
+            "holographic",
+            "iridescent shine",
+            "liquid chrome",
+            "luxury satin",
+            "matte with neon accents",
+            "metallic",
+            "mirror glass",
+            "mirror polish",
+            "opal shimmer",
+            "pearl sheen",
+            "polished acrylic",
+            "premium lacquer",
+            "reflective acrylic",
+            "reflective chrome",
+            "satin",
+            "shimmer finish",
+            "silk gloss",
+            "soft matte",
+            "soft sheen",
+            "sparkle coat",
+            "textured gloss",
+            "velvet matte",
+            "vinyl shine",
+            "wet gloss"
+      ],
+      "floatingIcons": [
+            "none",
+            "analytics badges",
+            "app logos",
+            "brand symbols",
+            "camera icons",
+            "comment bubbles",
+            "community hearts",
+            "confetti icons",
+            "creator badges",
+            "emoji reactions",
+            "follower badges",
+            "glitter stars",
+            "growth arrows",
+            "hashtag symbols",
+            "heart icons",
+            "hearts",
+            "like icons",
+            "likes",
+            "live badges",
+            "message icons",
+            "micro icons",
+            "mixed social icons",
+            "money icons",
+            "music notes",
+            "notification bubbles",
+            "notifications",
+            "play buttons",
+            "profile bubbles",
+            "reaction bubbles",
+            "sales icons",
+            "share symbols",
+            "sparkles",
+            "stars",
+            "sticker icons",
+            "story rings",
+            "traffic arrows",
+            "trend arrows",
+            "viral symbols",
+            "website badges",
+            "wishlist icons"
+      ],
+      "motionEffects": [
+            "none",
+            "action blur",
+            "ambient particles",
+            "burst effects",
+            "camera flare streaks",
+            "confetti",
+            "digital streaks",
+            "electric arcs",
+            "energy sparks",
+            "engagement swirl",
+            "explosion trails",
+            "firework sparks",
+            "floating dust",
+            "floating glitter",
+            "glass shards",
+            "glow streaks",
+            "heat-wave motion",
+            "holographic flares",
+            "laser lines",
+            "light trails",
+            "motion blur",
+            "neon ribbons",
+            "orbital trails",
+            "particle storm",
+            "portal effects",
+            "power streaks",
+            "reaction storm",
+            "screen shatter burst",
+            "spark bursts",
+            "spark trails",
+            "spiral energy",
+            "star flares",
+            "streamer ribbons",
+            "swirl effects",
+            "trailing hearts",
+            "upward light beams",
+            "vortex motion",
+            "wave trails",
+            "wind streaks",
+            "zoom burst"
+      ],
+      "uiEffects": [
+            "none",
+            "analytics panels",
+            "app menus",
+            "callout boxes",
+            "chart overlays",
+            "checkout widgets",
+            "comment feed",
+            "community widgets",
+            "dashboard graphs",
+            "dm pop-ups",
+            "engagement counters",
+            "feed tiles",
+            "follower counts",
+            "glowing buttons",
+            "graph cards",
+            "growth meters",
+            "interface frames",
+            "live comments",
+            "live poll widgets",
+            "metric overlays",
+            "mini dashboards",
+            "notification bubbles",
+            "pop-up alerts",
+            "profile cards",
+            "reaction counters",
+            "sales metrics",
+            "sales popups",
+            "screen widgets",
+            "social cards",
+            "stat bubbles",
+            "story bars",
+            "ticker strips",
+            "timeline overlays",
+            "transparent overlays",
+            "trend cards",
+            "upload meters",
+            "user badges",
+            "video counters",
+            "web panels",
+            "workflow cards"
+      ],
+      "specialEffectFocus": [
+            "none",
+            "app-world immersion",
+            "big creator energy",
+            "billboard creator aura",
+            "cinematic app glow",
+            "comment storm",
+            "content empire aura",
+            "conversion spotlight",
+            "creator throne aura",
+            "dashboard fantasy burst",
+            "dreamy ambient sparkles",
+            "floating reaction storm",
+            "follower storm",
+            "glass-break action",
+            "glowing tech aura",
+            "growth-energy beam",
+            "heroic skyline energy",
+            "luxury social glow",
+            "magical engagement trail",
+            "main-character spotlight",
+            "money-energy glow",
+            "neon halo explosion",
+            "notification storm",
+            "platform power aura",
+            "portal screen breakthrough",
+            "premium glow-up energy",
+            "reaction tunnel",
+            "ring-light halo",
+            "sales celebration burst",
+            "screen-break fantasy",
+            "shattered screen portal",
+            "social media magic",
+            "sparkling viral wave",
+            "spotlight success glow",
+            "stage-like hero aura",
+            "success confetti burst",
+            "tech glam explosion",
+            "viral explosion",
+            "viral orbit trail",
+            "website launch glow"
+      ],
+      "typographyStyle": [
+            "none",
+            "3D bubble type",
+            "all-caps brand type",
+            "bold block letters",
+            "clean app UI",
+            "clean luxury font",
+            "comic bubble text",
+            "creator headline text",
+            "digital ticker type",
+            "editorial headline",
+            "elegant serif",
+            "futuristic sans serif",
+            "glam script",
+            "glowing logo text",
+            "graffiti type",
+            "handwritten script",
+            "high-impact sans",
+            "luxury serif",
+            "metallic logo type",
+            "minimal sans",
+            "modern serif",
+            "monoline script",
+            "neon script",
+            "outline block type",
+            "playful rounded type",
+            "poster title type",
+            "premium branding font",
+            "retro display type",
+            "sleek sans serif",
+            "social UI text",
+            "soft cursive",
+            "stacked headline type",
+            "storybook serif",
+            "tech display font",
+            "thumbnail text style",
+            "ultra-bold caps",
+            "vertical editorial type",
+            "vintage serif",
+            "wide tracking sans",
+            "y2k display text"
+      ],
+      "shotType": [
+            "none",
+            "action freeze shot",
+            "ad campaign portrait",
+            "app-world overview shot",
+            "bird's-eye shot",
+            "brand-campaign shot",
+            "cinematic billboard shot",
+            "city-scale shot",
+            "close-up",
+            "creator throne shot",
+            "dashboard wide shot",
+            "dynamic motion shot",
+            "editorial crop",
+            "environmental portrait",
+            "extreme close-up",
+            "extreme perspective",
+            "floating hero shot",
+            "full-body",
+            "full-body hero shot",
+            "grouped object shot",
+            "head-to-toe portrait",
+            "hero poster shot",
+            "hero skyline shot",
+            "macro detail shot",
+            "mid-shot",
+            "overhead flat lay",
+            "portal action shot",
+            "portrait poster shot",
+            "product-and-person shot",
+            "runway shot",
+            "screen-break shot",
+            "shoulder-up shot",
+            "studio portrait",
+            "three-quarter shot",
+            "vertical campaign shot",
+            "waist-up",
+            "wide cinematic",
+            "wide full-body shot",
+            "wide portrait",
+            "worm's-eye shot"
+      ],
+      "lensFeel": [
+            "none",
+            "action lens",
+            "anamorphic cinematic",
+            "beauty lens",
+            "billboard lens",
+            "cinematic hero lens",
+            "cinematic social lens",
+            "clean portrait lens",
+            "close editorial lens",
+            "commercial ad lens",
+            "creator-campaign lens",
+            "digital billboard lens",
+            "dramatic portrait lens",
+            "dynamic action lens",
+            "editorial framing",
+            "exaggerated perspective",
+            "fashion campaign lens",
+            "film still lens",
+            "fisheye drama",
+            "glam portrait lens",
+            "glossy ad lens",
+            "heroic wide lens",
+            "high-end commercial lens",
+            "immersive lens",
+            "long-lens compression",
+            "luxury ad lens",
+            "macro lens",
+            "medium-format feel",
+            "phone-camera realism",
+            "portrait lens",
+            "runway lens",
+            "screen-break lens",
+            "sharp studio lens",
+            "soft beauty lens",
+            "story-driven lens",
+            "telephoto feel",
+            "ultra-wide lens",
+            "vintage film lens",
+            "wide-angle dramatic",
+            "zoom burst feel"
+      ],
+      "compositionStyle": [
+            "none",
+            "app-icon framing",
+            "asymmetrical balance",
+            "billboard campaign layout",
+            "brand-campaign framing",
+            "center-weighted campaign layout",
+            "centered hero layout",
+            "cinematic action layout",
+            "city-depth layout",
+            "clean catalog layout",
+            "clean centered layout",
+            "close hero framing",
+            "diagonal movement layout",
+            "dramatic foreground framing",
+            "dynamic diagonal energy",
+            "editorial negative space",
+            "epic hero composition",
+            "framed by icons",
+            "full-page poster layout",
+            "grid-inspired layout",
+            "hero-centered",
+            "layered depth",
+            "leading-line composition",
+            "magazine cover layout",
+            "mirrored symmetry",
+            "off-center hero",
+            "panel-style layout",
+            "portal-framed layout",
+            "poster symmetry",
+            "rule-of-thirds layout",
+            "screen-break composition",
+            "split composition",
+            "spotlight-centered layout",
+            "stacked layers",
+            "strong central focus",
+            "symmetrical poster",
+            "tall vertical poster",
+            "tunnel composition",
+            "wide open layout",
+            "zig-zag energy layout"
+      ],
+      "aspectRatio": [
+            "none",
+            "9:16 vertical",
+            "16:9 widescreen",
+            "1:1 square",
+            "4:5 portrait",
+            "2:3 portrait",
+            "3:4 portrait",
+            "5:7 portrait",
+            "21:9 cinematic",
+            "3:2 landscape",
+            "4:3 classic",
+            "5:4 poster",
+            "1:2 tall",
+            "2:1 banner",
+            "8.5x11 poster",
+            "11x17 poster",
+            "story format",
+            "reel format",
+            "shorts format",
+            "thumbnail format",
+            "flyer format",
+            "phone wallpaper",
+            "desktop wallpaper",
+            "tablet wallpaper",
+            "square post",
+            "vertical poster",
+            "wide banner",
+            "cinema poster",
+            "social ad format",
+            "pin format",
+            "ebook cover",
+            "magazine cover",
+            "billboard ratio",
+            "album cover",
+            "stream overlay ratio",
+            "web hero ratio",
+            "landing page ratio",
+            "portrait crop",
+            "widescreen crop",
+            "custom crop"
+      ],
+      "artStyle": [
+            "none",
+            "3D ad fantasy",
+            "3D commercial character art",
+            "3D glossy poster art",
+            "app-world fantasy art",
+            "beauty campaign art",
+            "billboard promo art",
+            "bold social fantasy art",
+            "cinematic creator fantasy",
+            "cinematic digital illustration",
+            "cinematic promo render",
+            "commercial creator poster",
+            "digital glam fantasy",
+            "digital poster art",
+            "editorial ad art",
+            "fantasy campaign art",
+            "fashion-tech fantasy",
+            "glam creator illustration",
+            "glossy 3D commercial poster",
+            "high-end promo art",
+            "high-fashion social fantasy",
+            "hyper-stylized realism",
+            "luxury digital poster",
+            "magazine-cover fantasy",
+            "modern commercial fantasy",
+            "neon fantasy render",
+            "polished UI fantasy",
+            "premium ad illustration",
+            "premium creator art",
+            "screen-break fantasy art",
+            "semi-realistic fantasy render",
+            "social media fantasy poster",
+            "stylized creator realism",
+            "surreal concept art",
+            "tech glam illustration",
+            "techno-surreal illustration",
+            "thumbnail fantasy art",
+            "ultra-polished campaign art",
+            "viral promo fantasy",
+            "visual brand poster art"
+      ],
+      "detailLevel": [
+            "none",
+            "ad-level detail",
+            "beauty-level detail",
+            "campaign detail",
+            "cinematic detail",
+            "clean detail",
+            "commercial detail",
+            "crisp detail",
+            "editorial detail",
+            "extreme detail",
+            "fabric-rich detail",
+            "face-rich detail",
+            "fashion detail",
+            "fine detail",
+            "glossy detail",
+            "hair-rich detail",
+            "hero detail",
+            "high detail",
+            "icon-rich detail",
+            "lighting-rich detail",
+            "luxury detail",
+            "macro detail",
+            "maximum detail",
+            "medium detail",
+            "micro-detail",
+            "object-rich detail",
+            "polished detail",
+            "premium detail",
+            "product-level detail",
+            "rendered detail",
+            "scene-rich detail",
+            "screen-ready detail",
+            "sharp detail",
+            "soft detail",
+            "story-rich detail",
+            "texture-rich detail",
+            "UI-rich detail",
+            "ultra-detailed",
+            "ultra-fine detail",
+            "vivid detail"
+      ],
+      "renderFinish": [
+            "none",
+            "ad-campaign quality",
+            "beauty-commercial finish",
+            "beauty-editorial finish",
+            "billboard finish",
+            "broadcast finish",
+            "cinematic finish",
+            "clean digital finish",
+            "commercial luxury finish",
+            "creator-brand finish",
+            "crisp polished finish",
+            "editorial finish",
+            "glossy finish",
+            "high-end commercial render",
+            "high-shine finish",
+            "hyper-clean finish",
+            "immersive finish",
+            "luxury social content style",
+            "magazine-grade finish",
+            "movie-poster finish",
+            "neon-polished finish",
+            "photo-polished finish",
+            "polished brand finish",
+            "poster-worthy",
+            "premium polished",
+            "premium poster finish",
+            "product-shot finish",
+            "rendered-glam finish",
+            "rich glossy finish",
+            "runway-grade finish",
+            "scroll-stopping finish",
+            "sharp ad finish",
+            "sleek campaign finish",
+            "social-ad finish",
+            "studio-finish render",
+            "thumbnail-worthy",
+            "ultra-polished finish",
+            "vibrant campaign finish",
+            "viral-ready finish",
+            "website-hero finish"
+      ]
+};
+
+
+    function cleanLine(text){
+      return (text || "").replace(/\s+/g, " ").trim();
+    }
+
+    function buildGptInstructions(data){
+      const coreCategories = [
+        "Character",
+        "Styling",
+        "Platform Theme",
+        "Pose + Scene",
+        "Mood + Look",
+        "Effects + Camera + Style",
+        "Negative Prompt"
+      ];
+
+      const categoryDetails = [
+        "Character: subject type, age vibe, body type, skin tone, face vibe, hair style, expression, and custom facial or hair detail notes.",
+        "Styling: wardrobe, shoes, accessories, shirt text, and custom outfit or accessory descriptions.",
+        "Platform Theme: primary platform, secondary platforms, screen type, branding vibe, screen text, slogan text, dashboard text, and brand/theme notes.",
+        "Pose + Scene: pose, body angle, hand action, movement level, scene concept, environment, foreground elements, background elements, scene depth, and matching custom scene fields.",
+        "Mood + Look: mood, energy level, story vibe, lighting style, light direction, glow intensity, shadow style, color palette, palette style, surface finish, and extra lighting or color notes.",
+        "Effects + Camera + Style: floating icons, motion effects, UI effects, special effect focus, typography style, shot type, lens feel, composition style, aspect ratio, art style, detail level, render finish, and custom effects/render direction.",
+        "Negative Prompt: quality-control language used to block bad anatomy, weak rendering, clutter, gibberish text, broken perspective, and other ugly output issues."
+      ];
+
+      const generatorSummary = [
+        "This GPT specializes in helping users build prompts with the Social Media Fantasy Prompt Generator.",
+        "Its job is to guide users through the generator fields, explain the dropdowns in simple language, suggest better combinations, and turn the user's choices into polished prompts that match the generator's built-in style.",
+        "The generator focuses on cinematic surreal social-media fantasy art in a glossy 3D commercial poster style with strong creator-brand energy, oversized tech props, app-themed worlds, neon or polished lighting, and premium ad-style rendering.",
+        "The GPT should keep responses aligned with the generator's structure instead of inventing random systems that do not match the form."
+      ].join("\n");
+
+      const instructionBlock = [
+        "You are the built-in assistant for the Social Media Fantasy Prompt Generator.",
+        "",
+        "Purpose:",
+        "Help users build strong prompts with this exact generator. Guide them through the dropdowns, explain what each section does, recommend better combinations, and turn their choices into polished image-prompt language that matches the generator's intended look and structure.",
+        "",
+        "What this generator creates:",
+        "Cinematic, surreal, social-media fantasy artwork in a glossy 3D commercial poster style. The generator is designed for creator-themed visuals, oversized app elements, dashboard fantasy scenes, glowing engagement effects, stylized character posing, bold mood direction, and premium rendering.",
+        "",
+        "How to behave:",
+        "1. Base every suggestion on this generator's actual sections, fields, and logic.",
+        "2. Help the user pick better dropdown combinations when they are stuck.",
+        "3. When a field is set to custom, encourage the user to write a clear custom description that fits the same visual style.",
+        "4. Keep the visual direction consistent with the generator: polished, cinematic, scroll-stopping, ad-quality, social-media fantasy art.",
+        "5. Do not drift into unrelated styles unless the user explicitly asks for it.",
+        "6. Explain the fields in simple language and keep answers practical.",
+        "7. Suggest upgrades that strengthen clarity, composition, mood, lighting, or storytelling without breaking the generator structure.",
+        "",
+        "Generator sections and categories:",
+        ...categoryDetails,
+        "",
+        "Prompt assembly logic:",
+        "The generator builds the main prompt in blocks. It starts with the overall art style and subject description, then adds styling, platform theme, pose, scene concept, mood, lighting, color treatment, effects, text elements, camera direction, composition, and render finish. It also creates a compact prompt and a negative prompt. If a dropdown is set to custom, the matching custom text field should be used. If the custom field is blank, that phrase should be skipped instead of forcing broken placeholder text.",
+        "",
+        "How to help users:",
+        "Recommend clean combinations that make visual sense.",
+        "Point out when a mood clashes with a scene or when lighting clashes with the palette.",
+        "Suggest stronger custom wording for scene, effects, environment, or brand vibe fields.",
+        "Help users turn rough ideas into dropdown-ready choices.",
+        "Help users stay inside the generator's visual lane while still making the final prompt feel personal.",
+        "",
+        "Intended art style:",
+        "Glossy 3D commercial poster art, cinematic digital illustration, surreal social-media fantasy, stylized realism, premium ad-campaign polish, glowing UI-inspired effects, bold creator branding, dramatic depth, and scroll-stopping color and light.",
+        "",
+        "Current generator focus:",
+        `Primary platform: ${cleanLine(data.primaryPlatform) || "not specified"}.`,
+        `Branding vibe: ${cleanLine(data.brandingVibe) || "not specified"}.`,
+        `Scene direction: ${cleanLine(data.sceneConcept) || "not specified"} in ${cleanLine(data.environment) || "not specified"}.`,
+        `Mood and energy: ${cleanLine(data.mood) || "not specified"} with ${cleanLine(data.energyLevel) || "not specified"} energy.`,
+        `Lighting and palette: ${cleanLine(data.lightingStyle) || "not specified"}, ${cleanLine(data.primaryColors) || "not specified"}.`,
+        `Art finish: ${cleanLine(data.artStyle) || "not specified"}, ${cleanLine(data.renderFinish) || "not specified"}.`
+      ].join("\n");
+
+      const starterQuestions = [
+        "1. Help me choose the best dropdown combination for a strong social-media fantasy image.",
+        "2. Based on this generator, what should I put in the custom scene and effects fields to make the image look more cinematic?",
+        "3. Can you rewrite my rough idea so it fits this generator's style, categories, and prompt logic?",
+        "4. Which mood, lighting, and platform choices work best together for a premium creator-brand look?"
+      ].join("\n");
+
+      const knowledgeSection = [
+        "Knowledge",
+        "",
+        generatorSummary,
+        "",
+        "Core categories used by the generator:",
+        ...coreCategories.map(x => `- ${x}`),
+        "",
+        "Built-in logic and use case:",
+        "- The generator is meant to create prompts, not finished images.",
+        "- It uses structured dropdowns plus custom text fields.",
+        "- It outputs a base prompt, compact prompt, negative prompt, and now a Custom GPT setup block.",
+        "- The GPT should understand that users may need help deciding what belongs in subject, platform, mood, scene, lighting, effects, and art-style fields.",
+        "- The GPT should preserve the generator's tone: glossy, cinematic, creator-focused, surreal, clean, and premium.",
+        "- The GPT should explain how dropdowns and custom text fields work together.",
+        "- The GPT should help users improve clarity without changing the generator's structure."
+      ].join("\n");
+
+      return { instructionBlock, starterQuestions, knowledgeSection };
+    }
+
+
+
+    const fieldIds = Object.keys(options);
+
+    const presetDefinitions = [
+      {name:"Boss Creator Glow", values:{subjectType:"content creator", ageVibe:"40+", bodyType:"plus-size", skinTone:"caramel", faceVibe:"soft glam", hairStyle:"long waves", expression:"confident", wardrobe:"glam casual", shoes:"glam sneakers", accessories:"camera rig", primaryPlatform:"Instagram", secondaryPlatforms:"TikTok icons", screenType:"live stream", brandingVibe:"boss creator", pose:"sitting", bodyAngle:"3/4 angle", handAction:"holding camera", movementLevel:"light motion", sceneConcept:"sitting on glowing app cube", environment:"night city skyline", foregroundElements:"reaction bubbles", backgroundElements:"live comments", sceneDepth:"epic poster composition", mood:"triumphant", energyLevel:"high energy", storyVibe:"creator success", lightingStyle:"neon blue and pink", lightDirection:"backlit halo", glowIntensity:"strong", shadowStyle:"glowing reflections", primaryColors:"electric blue and hot pink", paletteStyle:"high contrast neon", surfaceFinish:"glossy", floatingIcons:"hearts", motionEffects:"engagement swirl", uiEffects:"transparent overlays", specialEffectFocus:"magical engagement trail", typographyStyle:"neon script", shotType:"full-body", lensFeel:"cinematic hero lens", compositionStyle:"hero-centered", aspectRatio:"9:16 vertical", artStyle:"glossy 3D commercial poster", detailLevel:"ultra-detailed", renderFinish:"premium polished"}},
+      {name:"Viral Dashboard Queen", values:{subjectType:"female", ageVibe:"30s", bodyType:"curvy", skinTone:"brown", faceVibe:"editorial", hairStyle:"voluminous curls", expression:"main-character energy", wardrobe:"black fitted outfit", shoes:"platform heels", accessories:"smartphone", primaryPlatform:"TikTok", secondaryPlatforms:"analytics symbols", screenType:"creator dashboard", brandingVibe:"viral success", pose:"standing", bodyAngle:"front-facing", handAction:"showing analytics", movementLevel:"bold motion", sceneConcept:"inside a giant creator dashboard", environment:"dashboard control room", foregroundElements:"glowing charts", backgroundElements:"metric graphs", sceneDepth:"layered cinematic depth", mood:"viral", energyLevel:"bold and loud", storyVibe:"engagement explosion", lightingStyle:"studio glam lighting", lightDirection:"front-lit", glowIntensity:"ultra-glow", shadowStyle:"clean studio shadows", primaryColors:"blue pink and orange", paletteStyle:"vibrant creator palette", surfaceFinish:"reflective acrylic", floatingIcons:"likes", motionEffects:"burst effects", uiEffects:"dashboard graphs", specialEffectFocus:"viral explosion", typographyStyle:"bold block letters", shotType:"portrait poster shot", lensFeel:"glossy ad lens", compositionStyle:"center-weighted campaign layout", aspectRatio:"9:16 vertical", artStyle:"social media fantasy poster", detailLevel:"premium detail", renderFinish:"thumbnail-worthy"}},
+      {name:"Luxury Mentor Launch", values:{subjectType:"social media coach", ageVibe:"50+", bodyType:"average", skinTone:"deep brown", faceVibe:"glamorous", hairStyle:"silk press", expression:"powerful", wardrobe:"power suit", shoes:"pointed heels", accessories:"laptop", primaryPlatform:"LinkedIn", secondaryPlatforms:"website icons", screenType:"sales dashboard", brandingVibe:"luxury mentor brand", pose:"walking forward", bodyAngle:"low-angle hero shot", handAction:"holding laptop", movementLevel:"strong forward motion", sceneConcept:"stepping into a digital storefront", environment:"luxury office", foregroundElements:"product mockups", backgroundElements:"website panels", sceneDepth:"premium ad scale", mood:"luxurious", energyLevel:"polished and confident", storyVibe:"premium business growth", lightingStyle:"luxury glam lighting", lightDirection:"soft ambient wrap", glowIntensity:"medium-high", shadowStyle:"luxury shadows", primaryColors:"royal blue and gold", paletteStyle:"luxury glow", surfaceFinish:"high polish", floatingIcons:"sales icons", motionEffects:"upward light beams", uiEffects:"sales metrics", specialEffectFocus:"sales celebration burst", typographyStyle:"premium branding font", shotType:"full-body hero shot", lensFeel:"high-end commercial lens", compositionStyle:"billboard campaign layout", aspectRatio:"4:5 portrait", artStyle:"premium creator art", detailLevel:"ad-level detail", renderFinish:"high-end commercial render"}},
+      {name:"Follower Galaxy", values:{subjectType:"influencer", ageVibe:"20s", bodyType:"slim", skinTone:"olive", faceVibe:"clean beauty", hairStyle:"high ponytail", expression:"joyful", wardrobe:"fashion-forward casual", shoes:"white sneakers", accessories:"vlog camera", primaryPlatform:"Instagram", secondaryPlatforms:"mixed social icons", screenType:"profile page", brandingVibe:"creator growth", pose:"floating pose", bodyAngle:"hero low angle", handAction:"holding phone", movementLevel:"floating", sceneConcept:"floating in a follower galaxy", environment:"digital sky world", foregroundElements:"spark trails", backgroundElements:"floating profile cards", sceneDepth:"towering scale scene", mood:"magical", energyLevel:"whimsical", storyVibe:"online fame", lightingStyle:"holographic glow", lightDirection:"multi-directional", glowIntensity:"radiant", shadowStyle:"soft shadows", primaryColors:"pink and purple", paletteStyle:"holographic color wash", surfaceFinish:"iridescent shine", floatingIcons:"follower badges", motionEffects:"orbital trails", uiEffects:"profile cards", specialEffectFocus:"viral orbit trail", typographyStyle:"glam script", shotType:"wide cinematic", lensFeel:"heroic wide lens", compositionStyle:"framed by icons", aspectRatio:"9:16 vertical", artStyle:"cinematic creator fantasy", detailLevel:"ultra-detailed", renderFinish:"viral-ready finish"}},
+      {name:"Comment Storm Hero", values:{subjectType:"male", ageVibe:"30s", bodyType:"athletic", skinTone:"cocoa", faceVibe:"sharp-featured", hairStyle:"buzzcut", expression:"fierce", wardrobe:"streetwear", shoes:"high-top sneakers", accessories:"headphones", primaryPlatform:"YouTube", secondaryPlatforms:"comment bubbles", screenType:"comment thread", brandingVibe:"content empire", pose:"punching toward camera", bodyAngle:"dynamic tilt", handAction:"fist forward", movementLevel:"explosive motion", sceneConcept:"inside a comment bubble storm", environment:"tech fantasy set", foregroundElements:"screen shards", backgroundElements:"comment clouds", sceneDepth:"screen-break depth", mood:"dramatic", energyLevel:"explosive", storyVibe:"a viral moment", lightingStyle:"color-gel lighting", lightDirection:"cross-lit", glowIntensity:"bright", shadowStyle:"high-contrast shadows", primaryColors:"red blue and magenta", paletteStyle:"loud neon palette", surfaceFinish:"glossy", floatingIcons:"comment bubbles", motionEffects:"screen shatter burst", uiEffects:"comment feed", specialEffectFocus:"comment storm", typographyStyle:"comic bubble text", shotType:"extreme perspective", lensFeel:"dynamic action lens", compositionStyle:"cinematic action layout", aspectRatio:"9:16 vertical", artStyle:"screen-break fantasy art", detailLevel:"extreme detail", renderFinish:"movie-poster finish"}},
+      {name:"Creator Throne Room", values:{subjectType:"female", ageVibe:"40+", bodyType:"thick", skinTone:"espresso", faceVibe:"soft glam", hairStyle:"long waves", expression:"luxurious confidence", wardrobe:"luxury chic", shoes:"heels", accessories:"diamond watch", primaryPlatform:"Pinterest", secondaryPlatforms:"brand symbols", screenType:"brand profile", brandingVibe:"premium coach brand", pose:"seated throne pose", bodyAngle:"front-facing", handAction:"resting on hip", movementLevel:"still and poised", sceneConcept:"sitting in a creator throne room", environment:"creator mansion", foregroundElements:"app icon cubes", backgroundElements:"billboard screens", sceneDepth:"grand cinematic scene", mood:"premium", energyLevel:"quiet luxury", storyVibe:"luxury creator life", lightingStyle:"beauty box lighting", lightDirection:"beauty-front light", glowIntensity:"premium glow", shadowStyle:"silky shadows", primaryColors:"champagne and ivory", paletteStyle:"premium ad palette", surfaceFinish:"pearl sheen", floatingIcons:"brand symbols", motionEffects:"floating glitter", uiEffects:"graph cards", specialEffectFocus:"creator throne aura", typographyStyle:"luxury serif", shotType:"full-body", lensFeel:"beauty lens", compositionStyle:"strong central focus", aspectRatio:"4:5 portrait", artStyle:"luxury digital poster", detailLevel:"luxury detail", renderFinish:"magazine-grade finish"}},
+      {name:"Digital Storefront Star", values:{subjectType:"digital product seller", ageVibe:"40+", bodyType:"average", skinTone:"warm beige", faceVibe:"radiant", hairStyle:"straight hair", expression:"proud", wardrobe:"boss casual", shoes:"ankle boots", accessories:"tablet", primaryPlatform:"Shopify", secondaryPlatforms:"storefront icons", screenType:"mobile storefront", brandingVibe:"premium product seller", pose:"standing", bodyAngle:"viewer-facing angle", handAction:"showing product", movementLevel:"controlled motion", sceneConcept:"on a glowing sales page", environment:"brand studio", foregroundElements:"custom product boxes", backgroundElements:"landing page visuals", sceneDepth:"brand-stage depth", mood:"empowering", energyLevel:"clean and elevated", storyVibe:"product launch win", lightingStyle:"clean studio light", lightDirection:"center front light", glowIntensity:"clean glow", shadowStyle:"clean studio shadows", primaryColors:"teal and pink", paletteStyle:"clean modern glow", surfaceFinish:"polished acrylic", floatingIcons:"product icons", motionEffects:"light trails", uiEffects:"checkout widgets", specialEffectFocus:"website launch glow", typographyStyle:"clean luxury font", shotType:"full-body", lensFeel:"commercial ad lens", compositionStyle:"clean centered layout", aspectRatio:"4:5 portrait", artStyle:"commercial creator poster", detailLevel:"commercial detail", renderFinish:"website-hero finish"}},
+      {name:"Podcast Power Glow", values:{subjectType:"podcaster", ageVibe:"50+", bodyType:"soft build", skinTone:"deep brown", faceVibe:"defined features", hairStyle:"short waves", expression:"confident", wardrobe:"structured couture", shoes:"dress shoes", accessories:"podcast mic", primaryPlatform:"podcast platform", secondaryPlatforms:"UI icons", screenType:"podcast page", brandingVibe:"thought leader", pose:"sitting", bodyAngle:"seated low angle", handAction:"holding microphone", movementLevel:"poised and still", sceneConcept:"hosting a live show from a floating stage", environment:"podcast room", foregroundElements:"microphones", backgroundElements:"podcast graphics", sceneDepth:"hero depth", mood:"bold", energyLevel:"focused intensity", storyVibe:"thought leader rise", lightingStyle:"spotlight glam", lightDirection:"spotlight center", glowIntensity:"strong", shadowStyle:"spotlight shadows", primaryColors:"plum and neon blue", paletteStyle:"editorial contrast", surfaceFinish:"satin", floatingIcons:"music notes", motionEffects:"star flares", uiEffects:"stream overlays", specialEffectFocus:"spotlight success glow", typographyStyle:"editorial headline", shotType:"mid-shot", lensFeel:"story-driven lens", compositionStyle:"spotlight-centered layout", aspectRatio:"16:9 widescreen", artStyle:"cinematic digital illustration", detailLevel:"cinematic detail", renderFinish:"broadcast finish"}},
+      {name:"Wellness Brand Rise", values:{subjectType:"wellness creator", ageVibe:"40+", bodyType:"balanced frame", skinTone:"honey", faceVibe:"natural", hairStyle:"low bun", expression:"warm smile", wardrobe:"minimal chic", shoes:"flats", accessories:"water bottle", primaryPlatform:"Instagram", secondaryPlatforms:"community hearts", screenType:"story viewer", brandingVibe:"wellness authority", pose:"walking forward", bodyAngle:"soft side angle", handAction:"open palm pose", movementLevel:"gentle motion", sceneConcept:"walking through a portal of social reactions", environment:"window-lit workspace", foregroundElements:"floating hearts", backgroundElements:"soft blur city lights", sceneDepth:"layered cinematic depth", mood:"uplifting", energyLevel:"gentle", storyVibe:"community rise", lightingStyle:"soft daylight", lightDirection:"window-side glow", glowIntensity:"soft aura", shadowStyle:"ambient shadows", primaryColors:"mint and lilac", paletteStyle:"soft luxe neutral palette", surfaceFinish:"soft sheen", floatingIcons:"heart icons", motionEffects:"trailing hearts", uiEffects:"story bars", specialEffectFocus:"social media magic", typographyStyle:"monoline script", shotType:"wide portrait", lensFeel:"soft beauty lens", compositionStyle:"rule-of-thirds layout", aspectRatio:"9:16 vertical", artStyle:"digital glam fantasy", detailLevel:"soft detail", renderFinish:"beauty-editorial finish"}},
+      {name:"Live Seller Spotlight", values:{subjectType:"live seller", ageVibe:"30s", bodyType:"curvy", skinTone:"toffee", faceVibe:"glossy beauty", hairStyle:"sleek ponytail", expression:"excited", wardrobe:"clubwear glam", shoes:"strappy heels", accessories:"ring light", primaryPlatform:"Amazon Live", secondaryPlatforms:"live badges", screenType:"live shopping screen", brandingVibe:"conversion-driven brand", pose:"holding phone up", bodyAngle:"front-facing", handAction:"showing product", movementLevel:"high-energy motion", sceneConcept:"rising out of a livestream panel", environment:"stage set", foregroundElements:"product mockups", backgroundElements:"sales charts", sceneDepth:"immersive scale", mood:"electric", energyLevel:"supercharged", storyVibe:"conversion win", lightingStyle:"ring light glow", lightDirection:"screen-lit front", glowIntensity:"electric", shadowStyle:"reflective floor shadows", primaryColors:"orange and teal", paletteStyle:"bright commercial color", surfaceFinish:"gel shine", floatingIcons:"live badges", motionEffects:"energy sparks", uiEffects:"live poll widgets", specialEffectFocus:"conversion spotlight", typographyStyle:"ultra-bold caps", shotType:"product-and-person shot", lensFeel:"glossy ad lens", compositionStyle:"brand-campaign framing", aspectRatio:"9:16 vertical", artStyle:"3D ad fantasy", detailLevel:"product-level detail", renderFinish:"social-ad finish"}},
+      {name:"Luxury App World", values:{subjectType:"fashion creator", ageVibe:"20s", bodyType:"model-proportioned", skinTone:"olive", faceVibe:"high-fashion", hairStyle:"blunt bob", expression:"cool stare", wardrobe:"metallic fashion", shoes:"platform boots", accessories:"designer sunglasses", primaryPlatform:"Instagram", secondaryPlatforms:"app logos", screenType:"app home screen", brandingVibe:"creator luxury", pose:"power stance", bodyAngle:"hero low angle", handAction:"touching sunglasses", movementLevel:"still and poised", sceneConcept:"inside a luxury app world", environment:"glam studio", foregroundElements:"glam sparkles", backgroundElements:"phone UI wall", sceneDepth:"designer campaign scale", mood:"glamorous", energyLevel:"elegant", storyVibe:"luxury creator life", lightingStyle:"glitter glow", lightDirection:"rim-lit", glowIntensity:"high glow", shadowStyle:"editorial shadows", primaryColors:"black and chrome", paletteStyle:"liquid chrome palette", surfaceFinish:"liquid chrome", floatingIcons:"app logos", motionEffects:"laser lines", uiEffects:"glowing buttons", specialEffectFocus:"luxury social glow", typographyStyle:"high-impact sans", shotType:"full-body hero shot", lensFeel:"fashion campaign lens", compositionStyle:"magazine cover layout", aspectRatio:"4:5 portrait", artStyle:"high-fashion social fantasy", detailLevel:"fashion detail", renderFinish:"runway-grade finish"}},
+      {name:"Women Over 40 Glow-Up", values:{subjectType:"grandmother creator", ageVibe:"60+", bodyType:"full figure", skinTone:"rich melanin", faceVibe:"radiant", hairStyle:"soft locs", expression:"triumphant", wardrobe:"casual glam", shoes:"metallic sneakers", accessories:"smartphone", primaryPlatform:"Facebook", secondaryPlatforms:"Facebook icons", screenType:"social feed", brandingVibe:"women-over-40 brand", pose:"victory pose", bodyAngle:"front-facing", handAction:"arms raised", movementLevel:"triumphant action", sceneConcept:"riding a wave of likes", environment:"city rooftop", foregroundElements:"like icons", backgroundElements:"social media feed", sceneDepth:"city-scale depth", mood:"motivational", energyLevel:"boss energy", storyVibe:"women-over-40 creator rise", lightingStyle:"golden hour light", lightDirection:"sunset backlight", glowIntensity:"warm glow", shadowStyle:"warm lamp shadows", primaryColors:"royal blue and gold", paletteStyle:"boss-business palette", surfaceFinish:"editorial gloss", floatingIcons:"likes", motionEffects:"wave trails", uiEffects:"engagement counters", specialEffectFocus:"premium glow-up energy", typographyStyle:"all-caps brand type", shotType:"full-body", lensFeel:"cinematic social lens", compositionStyle:"hero-centered", aspectRatio:"9:16 vertical", artStyle:"visual brand poster art", detailLevel:"hero detail", renderFinish:"creator-brand finish"}},
+      {name:"Sales Page Glow", values:{subjectType:"entrepreneur", ageVibe:"40+", bodyType:"slim thick", skinTone:"bronze", faceVibe:"camera-ready", hairStyle:"beach waves", expression:"determined", wardrobe:"chic blazer set", shoes:"pumps", accessories:"clipboard", primaryPlatform:"sales page", secondaryPlatforms:"sales symbols", screenType:"sales dashboard", brandingVibe:"brand authority", pose:"standing", bodyAngle:"straight-on", handAction:"holding clipboard", movementLevel:"controlled motion", sceneConcept:"standing in front of giant dashboard wall", environment:"social media office", foregroundElements:"sales icons", backgroundElements:"sales charts", sceneDepth:"epic poster composition", mood:"ambitious", energyLevel:"magnetic", storyVibe:"brand leadership", lightingStyle:"glossy screen light", lightDirection:"front-lit", glowIntensity:"vivid glow", shadowStyle:"crisp cinematic shadows", primaryColors:"emerald and gold", paletteStyle:"premium ad palette", surfaceFinish:"mirror polish", floatingIcons:"sales icons", motionEffects:"upward light beams", uiEffects:"sales popups", specialEffectFocus:"success confetti burst", typographyStyle:"premium branding font", shotType:"portrait poster shot", lensFeel:"high-end commercial lens", compositionStyle:"strong central focus", aspectRatio:"4:5 portrait", artStyle:"premium ad illustration", detailLevel:"campaign detail", renderFinish:"premium poster finish"}},
+      {name:"Mini City Profile", values:{subjectType:"lifestyle creator", ageVibe:"30s", bodyType:"petite", skinTone:"light beige", faceVibe:"soft beauty", hairStyle:"hijab", expression:"soft smile", wardrobe:"modest fashion", shoes:"heels", accessories:"crossbody bag", primaryPlatform:"Instagram", secondaryPlatforms:"Instagram icons", screenType:"profile page", brandingVibe:"elevated personal brand", pose:"standing", bodyAngle:"viewer-facing angle", handAction:"hands clasped", movementLevel:"still and poised", sceneConcept:"standing inside a profile page", environment:"miniature city", foregroundElements:"text bubbles", backgroundElements:"floating profile cards", sceneDepth:"large-scale fantasy scene", mood:"polished", energyLevel:"clean and elevated", storyVibe:"personal brand rise", lightingStyle:"softbox glam", lightDirection:"soft front glow", glowIntensity:"subtle", shadowStyle:"soft shadows", primaryColors:"soft beige and gold", paletteStyle:"soft luxe neutral palette", surfaceFinish:"satin", floatingIcons:"emoji reactions", motionEffects:"ambient particles", uiEffects:"profile cards", specialEffectFocus:"app-world immersion", typographyStyle:"clean luxury font", shotType:"full-body", lensFeel:"clean portrait lens", compositionStyle:"centered hero layout", aspectRatio:"9:16 vertical", artStyle:"app-world fantasy art", detailLevel:"clean detail", renderFinish:"clean digital finish"}},
+      {name:"Content Calendar Master", values:{subjectType:"educator", ageVibe:"50+", bodyType:"average", skinTone:"almond", faceVibe:"polished", hairStyle:"layered blowout", expression:"focused", wardrobe:"business casual", shoes:"loafers", accessories:"notebook", primaryPlatform:"creator dashboard", secondaryPlatforms:"dashboard widgets", screenType:"content calendar", brandingVibe:"trusted educator", pose:"working at laptop", bodyAngle:"over-the-shoulder", handAction:"writing notes", movementLevel:"poised and still", sceneConcept:"inside a content planner board", environment:"creator classroom", foregroundElements:"creator tools", backgroundElements:"task board", sceneDepth:"medium scene depth", mood:"inspirational", energyLevel:"balanced", storyVibe:"digital freedom journey", lightingStyle:"window light", lightDirection:"window-side glow", glowIntensity:"gentle glow", shadowStyle:"naturalistic shadows", primaryColors:"ice blue and lavender", paletteStyle:"clean modern glow", surfaceFinish:"soft matte", floatingIcons:"traffic arrows", motionEffects:"floating dust", uiEffects:"workflow cards", specialEffectFocus:"app-world immersion", typographyStyle:"clean app UI", shotType:"waist-up", lensFeel:"story-driven lens", compositionStyle:"grid-inspired layout", aspectRatio:"16:9 widescreen", artStyle:"digital poster art", detailLevel:"scene-rich detail", renderFinish:"clean digital finish"}},
+      {name:"Reel Portal Punch", values:{subjectType:"beauty creator", ageVibe:"20s", bodyType:"slim", skinTone:"warm undertone", faceVibe:"striking", hairStyle:"curly updo", expression:"amazed", wardrobe:"cropped jacket look", shoes:"white sneakers", accessories:"smartphone", primaryPlatform:"Instagram", secondaryPlatforms:"reaction icons", screenType:"post screen", brandingVibe:"main-character brand", pose:"stepping out of a screen", bodyAngle:"dynamic tilt", handAction:"reaching toward viewer", movementLevel:"explosive motion", sceneConcept:"breaking through a profile card", environment:"urban alley", foregroundElements:"broken glass", backgroundElements:"app interface", sceneDepth:"screen-break depth", mood:"wild", energyLevel:"electric", storyVibe:"a glam success moment", lightingStyle:"nightclub glow", lightDirection:"diagonal light", glowIntensity:"laser bright", shadowStyle:"hard-edged shadows", primaryColors:"magenta and violet", paletteStyle:"techno-pop palette", surfaceFinish:"wet gloss", floatingIcons:"reaction bubbles", motionEffects:"zoom burst", uiEffects:"pop-up alerts", specialEffectFocus:"portal screen breakthrough", typographyStyle:"3D bubble type", shotType:"extreme perspective", lensFeel:"screen-break lens", compositionStyle:"screen-break composition", aspectRatio:"9:16 vertical", artStyle:"viral promo fantasy", detailLevel:"extreme detail", renderFinish:"scroll-stopping finish"}},
+      {name:"Soft Luxe Authority", values:{subjectType:"coach", ageVibe:"50+", bodyType:"balanced frame", skinTone:"peach", faceVibe:"timeless", hairStyle:"sleek bob", expression:"calm", wardrobe:"luxury chic", shoes:"kitten heels", accessories:"handbag", primaryPlatform:"LinkedIn", secondaryPlatforms:"community icons", screenType:"brand profile", brandingVibe:"authority builder", pose:"standing", bodyAngle:"front-facing", handAction:"open palm pose", movementLevel:"calm stillness", sceneConcept:"posing in front of giant analytics screens", environment:"modern loft", foregroundElements:"brand props", backgroundElements:"growth graphs", sceneDepth:"premium ad scale", mood:"soft luxe", energyLevel:"quiet luxury", storyVibe:"authority building", lightingStyle:"softbox glam", lightDirection:"beauty-front light", glowIntensity:"soft aura", shadowStyle:"velvety dark shadows", primaryColors:"champagne pink and white", paletteStyle:"low-saturation luxe", surfaceFinish:"luxury satin", floatingIcons:"brand symbols", motionEffects:"floating glitter", uiEffects:"graph cards", specialEffectFocus:"platform power aura", typographyStyle:"elegant serif", shotType:"portrait poster shot", lensFeel:"beauty lens", compositionStyle:"centered hero layout", aspectRatio:"4:5 portrait", artStyle:"beauty campaign art", detailLevel:"beauty-level detail", renderFinish:"beauty-commercial finish"}},
+      {name:"Course Launch Energy", values:{subjectType:"course creator", ageVibe:"40+", bodyType:"average", skinTone:"mocha", faceVibe:"commercial beauty", hairStyle:"straight hair", expression:"excited", wardrobe:"clean creator outfit", shoes:"glam sneakers", accessories:"tablet", primaryPlatform:"Kajabi", secondaryPlatforms:"Kajabi icons", screenType:"dashboard graphs", brandingVibe:"content machine", pose:"standing", bodyAngle:"viewer-facing angle", handAction:"holding tablet", movementLevel:"bold motion", sceneConcept:"inside a glowing content calendar world", environment:"brand studio", foregroundElements:"video thumbnails", backgroundElements:"dashboard graphs", sceneDepth:"immersive scale", mood:"vibrant", energyLevel:"upbeat", storyVibe:"first big win", lightingStyle:"phone-screen glow", lightDirection:"screen-lit front", glowIntensity:"bright", shadowStyle:"polished reflections", primaryColors:"turquoise and gold", paletteStyle:"modern pop palette", surfaceFinish:"acrylic shine", floatingIcons:"video symbols", motionEffects:"digital streaks", uiEffects:"upload meters", specialEffectFocus:"dashboard fantasy burst", typographyStyle:"thumbnail text style", shotType:"full-body", lensFeel:"commercial ad lens", compositionStyle:"full-page poster layout", aspectRatio:"9:16 vertical", artStyle:"commercial creator poster", detailLevel:"screen-ready detail", renderFinish:"website-hero finish"}},
+      {name:"App Stage Spotlight", values:{subjectType:"speaker", ageVibe:"50+", bodyType:"strong frame", skinTone:"mahogany", faceVibe:"expressive", hairStyle:"short natural hair", expression:"empowered", wardrobe:"power suit", shoes:"dress shoes", accessories:"wireless mic", primaryPlatform:"webinar room", secondaryPlatforms:"UI icons", screenType:"stream overlay", brandingVibe:"thought leader", pose:"power stance", bodyAngle:"low-angle hero shot", handAction:"holding microphone", movementLevel:"high-energy motion", sceneConcept:"hosting a live show from a floating stage", environment:"stage set", foregroundElements:"spotlight beams", backgroundElements:"stream overlays", sceneDepth:"grand cinematic scene", mood:"bold", energyLevel:"focused intensity", storyVibe:"brand leadership", lightingStyle:"spotlight glam", lightDirection:"spotlight center", glowIntensity:"maximum glow", shadowStyle:"spotlight shadows", primaryColors:"midnight blue and gold", paletteStyle:"bold glam palette", surfaceFinish:"high polish", floatingIcons:"live badges", motionEffects:"camera flare streaks", uiEffects:"stream overlays", specialEffectFocus:"stage-like hero aura", typographyStyle:"poster title type", shotType:"wide cinematic", lensFeel:"billboard lens", compositionStyle:"spotlight-centered layout", aspectRatio:"16:9 widescreen", artStyle:"billboard promo art", detailLevel:"hero detail", renderFinish:"billboard finish"}},
+      {name:"Community Icon Burst", values:{subjectType:"small business owner", ageVibe:"40+", bodyType:"full figure", skinTone:"copper", faceVibe:"luminous", hairStyle:"box braids", expression:"joyful", wardrobe:"summer casual", shoes:"sandals", accessories:"water bottle", primaryPlatform:"Facebook", secondaryPlatforms:"community icons", screenType:"community feed", brandingVibe:"community leader", pose:"waving", bodyAngle:"front-facing", handAction:"waving", movementLevel:"gentle motion", sceneConcept:"walking through a portal of social reactions", environment:"floating city", foregroundElements:"emoji bubbles", backgroundElements:"community wall", sceneDepth:"surrounding depth", mood:"hopeful", energyLevel:"light and airy", storyVibe:"community rise", lightingStyle:"dreamy twilight glow", lightDirection:"full wrap light", glowIntensity:"dream glow", shadowStyle:"diffused shadows", primaryColors:"peach and aqua", paletteStyle:"dreamy pastel luxe", surfaceFinish:"soft sheen", floatingIcons:"community hearts", motionEffects:"trailing hearts", uiEffects:"community widgets", specialEffectFocus:"social media magic", typographyStyle:"handwritten script", shotType:"wide portrait", lensFeel:"soft beauty lens", compositionStyle:"rule-of-thirds layout", aspectRatio:"9:16 vertical", artStyle:"social media fantasy poster", detailLevel:"clean detail", renderFinish:"vibrant campaign finish"}},
+      {name:"Tech Glam Thunder", values:{subjectType:"female", ageVibe:"30s", bodyType:"athletic", skinTone:"espresso", faceVibe:"sharp-featured", hairStyle:"sleek ponytail", expression:"untouchable presence", wardrobe:"techwear glam", shoes:"combat boots", accessories:"headphones", primaryPlatform:"Discord", secondaryPlatforms:"Discord icons", screenType:"community feed", brandingVibe:"content empire", pose:"power stance", bodyAngle:"dramatic front angle", handAction:"arms crossed", movementLevel:"bold motion", sceneConcept:"inside a social media control room", environment:"space-like tech chamber", foregroundElements:"holographic icons", backgroundElements:"dashboard tiles", sceneDepth:"vortex depth", mood:"futuristic", energyLevel:"electric", storyVibe:"a digital empire story", lightingStyle:"laser glow", lightDirection:"under-screen glow", glowIntensity:"laser bright", shadowStyle:"deep dramatic shadows", primaryColors:"chrome and cyan", paletteStyle:"digital fantasy palette", surfaceFinish:"chrome glow", floatingIcons:"UI icons", motionEffects:"electric arcs", uiEffects:"mini dashboards", specialEffectFocus:"tech glam explosion", typographyStyle:"tech display font", shotType:"full-body hero shot", lensFeel:"ultra-wide lens", compositionStyle:"portal-framed layout", aspectRatio:"9:16 vertical", artStyle:"tech glam illustration", detailLevel:"icon-rich detail", renderFinish:"neon-polished finish"}},
+      {name:"Sales Celebration Burst", values:{subjectType:"online seller", ageVibe:"40+", bodyType:"curvy", skinTone:"caramel", faceVibe:"glamorous", hairStyle:"beach waves", expression:"celebratory", wardrobe:"designer casual", shoes:"heels", accessories:"smart watch", primaryPlatform:"Etsy", secondaryPlatforms:"sales symbols", screenType:"product page", brandingVibe:"money-making creator", pose:"arms raised", bodyAngle:"front-facing", handAction:"arms raised", movementLevel:"triumphant action", sceneConcept:"holding a viral graph", environment:"product shelf set", foregroundElements:"sales icons", backgroundElements:"money graphs", sceneDepth:"epic poster composition", mood:"celebratory", energyLevel:"triumphant burst", storyVibe:"sales celebration", lightingStyle:"golden hour light", lightDirection:"hero front glow", glowIntensity:"bright", shadowStyle:"crisp cinematic shadows", primaryColors:"ruby and gold", paletteStyle:"bright commercial color", surfaceFinish:"diamond sparkle", floatingIcons:"money icons", motionEffects:"confetti", uiEffects:"sales popups", specialEffectFocus:"money-energy glow", typographyStyle:"all-caps brand type", shotType:"full-body", lensFeel:"glossy ad lens", compositionStyle:"strong central focus", aspectRatio:"4:5 portrait", artStyle:"premium ad illustration", detailLevel:"premium detail", renderFinish:"high-shine finish"}},
+      {name:"Ring Light Dream", values:{subjectType:"beauty entrepreneur", ageVibe:"30s", bodyType:"slim thick", skinTone:"toffee", faceVibe:"bold glam", hairStyle:"wet-look waves", expression:"radiant", wardrobe:"sleek bodycon fit", shoes:"stilettos", accessories:"ring light", primaryPlatform:"TikTok", secondaryPlatforms:"reaction icons", screenType:"video editor", brandingVibe:"glam business coach", pose:"phone selfie pose", bodyAngle:"close portrait angle", handAction:"holding phone", movementLevel:"soft cinematic drift", sceneConcept:"inside a giant ring light scene", environment:"glam studio", foregroundElements:"ring lights", backgroundElements:"video counters", sceneDepth:"portrait depth", mood:"glamorous", energyLevel:"radiant", storyVibe:"a feminine power story", lightingStyle:"ring light glow", lightDirection:"beauty-front light", glowIntensity:"halo glow", shadowStyle:"airbrushed shadows", primaryColors:"rose gold and blush", paletteStyle:"beauty-campaign palette", surfaceFinish:"gel shine", floatingIcons:"glitter stars", motionEffects:"spark bursts", uiEffects:"video counters", specialEffectFocus:"ring-light halo", typographyStyle:"glowing logo text", shotType:"close-up", lensFeel:"beauty lens", compositionStyle:"close hero framing", aspectRatio:"9:16 vertical", artStyle:"glam creator illustration", detailLevel:"beauty-level detail", renderFinish:"beauty-editorial finish"}},
+      {name:"Brand Billboard Victory", values:{subjectType:"founder", ageVibe:"50+", bodyType:"strong frame", skinTone:"deep ebony", faceVibe:"defined features", hairStyle:"short waves", expression:"triumphant", wardrobe:"power suit", shoes:"dress shoes", accessories:"press badge", primaryPlatform:"brand website", secondaryPlatforms:"website icons", screenType:"landing page", brandingVibe:"brand authority", pose:"victory pose", bodyAngle:"hero low angle", handAction:"pointing upward", movementLevel:"strong forward motion", sceneConcept:"standing in front of giant dashboard wall", environment:"city rooftop", foregroundElements:"traffic arrows", backgroundElements:"billboard screens", sceneDepth:"grand cinematic scene", mood:"triumphant", energyLevel:"strong momentum", storyVibe:"brand comeback", lightingStyle:"billboard light", lightDirection:"backlit halo", glowIntensity:"maximum glow", shadowStyle:"bold shadows", primaryColors:"black gold and blue", paletteStyle:"bold glam palette", surfaceFinish:"mirror glass", floatingIcons:"growth arrows", motionEffects:"upward light beams", uiEffects:"web panels", specialEffectFocus:"billboard creator aura", typographyStyle:"poster title type", shotType:"cinematic billboard shot", lensFeel:"digital billboard lens", compositionStyle:"billboard campaign layout", aspectRatio:"11x17 poster", artStyle:"billboard promo art", detailLevel:"maximum detail", renderFinish:"billboard finish"}},
+      {name:"Reinvention Walk", values:{subjectType:"mom creator", ageVibe:"40+", bodyType:"soft curvy", skinTone:"warm beige", faceVibe:"soft glam", hairStyle:"half-up half-down", expression:"determined", wardrobe:"blazer look", shoes:"ankle boots", accessories:"handbag", primaryPlatform:"Facebook", secondaryPlatforms:"message icons", screenType:"post screen", brandingVibe:"online business glow-up", pose:"walking forward", bodyAngle:"mid-twist angle", handAction:"holding bag", movementLevel:"power walk energy", sceneConcept:"walking across giant keyboard keys", environment:"giant keyboard world", foregroundElements:"giant keyboard keys", backgroundElements:"notification panels", sceneDepth:"deep layered scene", mood:"motivational", energyLevel:"power walk energy", storyVibe:"a reinvention arc", lightingStyle:"backlit sunset glow", lightDirection:"sunset backlight", glowIntensity:"warm glow", shadowStyle:"long shadows", primaryColors:"sunset coral and violet", paletteStyle:"sunset fantasy palette", surfaceFinish:"silk gloss", floatingIcons:"message icons", motionEffects:"wind streaks", uiEffects:"notification bubbles", specialEffectFocus:"big creator energy", typographyStyle:"bold block letters", shotType:"wide full-body shot", lensFeel:"dramatic portrait lens", compositionStyle:"leading-line composition", aspectRatio:"9:16 vertical", artStyle:"cinematic promo render", detailLevel:"story-rich detail", renderFinish:"poster-worthy"}},
+      {name:"App Orbit Success", values:{subjectType:"personal brand creator", ageVibe:"30s", bodyType:"toned frame", skinTone:"bronze", faceVibe:"photogenic", hairStyle:"braided ponytail", expression:"proud", wardrobe:"sport luxe", shoes:"platform sneakers", accessories:"smartphone", primaryPlatform:"social media mix", secondaryPlatforms:"mixed social icons", screenType:"viral tracker", brandingVibe:"magnetic brand vibe", pose:"standing", bodyAngle:"front-facing", handAction:"holding phone", movementLevel:"floating", sceneConcept:"on top of giant phone", environment:"abstract glowing void", foregroundElements:"app icon cubes", backgroundElements:"trend charts", sceneDepth:"app-world depth", mood:"electric", energyLevel:"magnetic", storyVibe:"brand power", lightingStyle:"mixed neon glow", lightDirection:"wraparound glow", glowIntensity:"vivid glow", shadowStyle:"glassy reflections", primaryColors:"lime and aqua", paletteStyle:"color-blocked neon", surfaceFinish:"glassy", floatingIcons:"mixed social icons", motionEffects:"spiral energy", uiEffects:"trend cards", specialEffectFocus:"follower storm", typographyStyle:"futuristic sans serif", shotType:"hero poster shot", lensFeel:"immersive lens", compositionStyle:"app-icon framing", aspectRatio:"9:16 vertical", artStyle:"techno-surreal illustration", detailLevel:"UI-rich detail", renderFinish:"ultra-polished finish"}},
+      {name:"Creator CEO Shine", values:{subjectType:"business owner", ageVibe:"50+", bodyType:"solid build", skinTone:"mahogany", faceVibe:"high-fashion", hairStyle:"sleek bob", expression:"bossed-up", wardrobe:"structured couture", shoes:"pointed heels", accessories:"designer sunglasses", primaryPlatform:"LinkedIn", secondaryPlatforms:"growth symbols", screenType:"leaderboard", brandingVibe:"creator CEO", pose:"posing confidently", bodyAngle:"front-facing", handAction:"arms crossed", movementLevel:"still and poised", sceneConcept:"on a floating platform of app icons", environment:"penthouse interior", foregroundElements:"glowing stairs", backgroundElements:"growth graphs", sceneDepth:"grand cinematic scene", mood:"bossed-up", energyLevel:"polished and confident", storyVibe:"brand leadership", lightingStyle:"luxury glam lighting", lightDirection:"full wrap light", glowIntensity:"premium glow", shadowStyle:"luxury shadows", primaryColors:"midnight blue and gold", paletteStyle:"luxury glow", surfaceFinish:"high polish", floatingIcons:"growth arrows", motionEffects:"star flares", uiEffects:"stat bubbles", specialEffectFocus:"platform power aura", typographyStyle:"editorial headline", shotType:"full-body hero shot", lensFeel:"high-end commercial lens", compositionStyle:"epic hero composition", aspectRatio:"4:5 portrait", artStyle:"ultra-polished campaign art", detailLevel:"campaign detail", renderFinish:"commercial luxury finish"}}
+    ];
+
+    function sortSelectAlphaExceptFirst(selectEl){
+      const opts = Array.from(selectEl.options).map(o => ({value:o.value, text:o.textContent}));
+      if(!opts.length) return;
+      const first = opts[0];
+      const rest = opts.slice(1).sort((a,b)=>a.text.localeCompare(b.text, undefined, {sensitivity:"base"}));
+      selectEl.innerHTML = "";
+      [first, ...rest].forEach(o=>{
+        const opt = document.createElement("option");
+        opt.value = o.value;
+        opt.textContent = o.text;
+        selectEl.appendChild(opt);
+      });
+    }
+
+    function applyAlphabetizeRules(){
+      document.querySelectorAll("select").forEach(selectEl => {
+        if(selectEl.id !== "subjectType"){
+          sortSelectAlphaExceptFirst(selectEl);
+        }
+      });
+    }
+
+    function renderPresets(){
+      const grid = document.getElementById("presetGrid");
+      if(!grid) return;
+      grid.innerHTML = "";
+      presetDefinitions.forEach((preset, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "preset-btn";
+        btn.textContent = preset.name;
+        btn.addEventListener("click", () => applyPreset(preset));
+        grid.appendChild(btn);
+      });
+    }
+
+    function applyPreset(preset){
+      clearAll();
+      Object.entries(preset.values).forEach(([id, value]) => {
+        const el = document.getElementById(id);
+        if(!el) return;
+        if(el.tagName === "SELECT"){
+          const match = Array.from(el.options).find(opt => opt.value === value);
+          if(match) el.value = value;
+        } else {
+          el.value = value;
+        }
+      });
+      buildPrompt();
+      window.scrollTo({top:0, behavior:"smooth"});
+    }
+
+    function randomChoice(arr){
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function setRandomValues(){
+      const selectIds = Object.keys(options);
+      selectIds.forEach(id => {
+        const el = document.getElementById(id);
+        if(!el || el.tagName !== "SELECT") return;
+
+        const pool = Array.from(el.options)
+          .map(opt => opt.value)
+          .filter(v => v && v !== "none" && v !== "custom");
+
+        if(pool.length){
+          const randomValue = pool[Math.floor(Math.random() * pool.length)];
+          el.value = randomValue;
+        } else if (el.options.length) {
+          el.selectedIndex = 0;
+        }
+      });
+
+      buildPrompt();
+    }
+    const defaultNegativePrompt = `low quality, blurry, pixelated, noisy, muddy colors, dull lighting, flat composition, weak contrast, bad anatomy, extra fingers, missing fingers, extra limbs, broken limbs, distorted face, asymmetrical eyes, malformed hands, poorly drawn hands, awkward pose, duplicate subject, duplicate objects, floating body parts, warped phone, broken perspective, cluttered layout, unreadable text, gibberish text, misspelled platform names, deformed app icons, messy background, oversaturated highlights, muddy shadows, cheap textures, low detail skin, low detail clothing, poorly rendered accessories, random objects, bad crop, off-center framing, weak depth, lifeless expression, stiff posture, generic stock look, plain background, boring lighting`;
+
+    function populateSelect(id, values){
+      const el = document.getElementById(id);
+      el.innerHTML = "";
+      values.forEach(val => {
+        const opt = document.createElement("option");
+        opt.value = val;
+        opt.textContent = val;
+        el.appendChild(opt);
+      });
+    }
+
+    Object.keys(options).forEach(key => populateSelect(key, options[key]));
+    applyAlphabetizeRules();
+    renderPresets();
+    document.getElementById("negativePrompt").value = defaultNegativePrompt;
+
+    const customFieldMap = {
+      subjectType: "customSubjectDescription",
+      wardrobe: "customOutfitDescription",
+      accessories: "customAccessories",
+      secondaryPlatforms: "customPlatformMix",
+      sceneConcept: "customSceneConcept",
+      environment: "customEnvironment",
+      foregroundElements: "customForegroundElements",
+      backgroundElements: "customBackgroundElements",
+      mood: "customMood",
+      storyVibe: "customStoryVibe",
+      lightingStyle: "customLightingNotes",
+      primaryColors: "customColorPalette",
+      surfaceFinish: "customSurfaceFinish",
+      floatingIcons: "customEffects",
+      motionEffects: "customEffects",
+      uiEffects: "customEffects",
+      specialEffectFocus: "customEffects",
+      shotType: "customCameraDirection",
+      lensFeel: "customCameraDirection",
+      compositionStyle: "customCompositionNotes",
+      artStyle: "customRenderNotes",
+      renderFinish: "customRenderNotes"
+    };
+
+    function val(id){
+      const el = document.getElementById(id);
+      return el ? el.value.trim() : "";
+    }
+
+    function pick(id){
+      const selected = val(id);
+      if(selected !== "custom") return selected;
+      const customId = customFieldMap[id];
+      const customValue = customId ? val(customId) : "";
+      return customValue || "";
+    }
+
+    function addSentence(parts, sentence){
+      const cleaned = sentence.replace(/\s+/g," ").trim();
+      if(cleaned) parts.push(cleaned);
+    }
+
+    function listWords(text){
+      return text.trim() ? text.trim().split(/\s+/).length : 0;
+    }
+
+
+    function safeValue(value, fallback = ""){
+      if(value === undefined || value === null) return fallback;
+      const cleaned = String(value).trim();
+      if(!cleaned || cleaned === "none" || cleaned === "custom") return fallback;
+      return cleaned;
+    }
+
+    function titleCaseWords(text){
+      const cleaned = String(text || "").trim();
+      if(!cleaned) return "";
+      return cleaned
+        .split(/\s+/)
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+    }
+
+    const sunoGenreOptions = ["Afrobeats","R&B","Pop","Hip-Hop","Jazz","Soul","Gospel","Dancehall","Reggae","Electronic","Lo-fi","Trap","House","Funk","Neo-Soul","Drill","Amapiano","Highlife","Afro-fusion","Classical","Blues","Rock","Indie","Country","Latin","K-Pop","Synthwave","Alternative Pop","Future Bass","Dance Pop"];
+    const sunoStyleOptions = ["Beyoncé-inspired confidence","SZA-inspired vulnerability","Rihanna-inspired cool","Doja Cat-inspired playfulness","H.E.R.-inspired soul","Erykah Badu-inspired earthiness","Janelle Monáe-inspired futurism","Solange-inspired artfulness","Megan Thee Stallion-inspired boldness","Cardi B-inspired attitude","FKA Twigs-inspired experimental edge","Frank Ocean-inspired introspection","The Weeknd-inspired late-night mood","Billie Eilish-inspired moody minimalism","Tyla-inspired rhythm","Jazmine Sullivan-inspired vocal power","Tems-inspired smoky warmth","Victoria Monét-inspired sleek groove","Ari Lennox-inspired velvet soul","Brent Faiyaz-inspired cool tension","glam boss energy","luxury nightlife vibe","soft feminine power","festival heat","viral anthem energy","cinematic confidence","high-fashion cool","warm retro soul","digital fantasy mood","bossed-up club feel"];
+    const sunoVocalTypeOptions = ["Vocal","Instrumental"];
+
+    function renderChipGroup(containerId, values, selectedValues = []){
+      const wrap = document.getElementById(containerId);
+      if(!wrap) return;
+      wrap.innerHTML = "";
+      values.forEach(value => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `chip-btn${selectedValues.includes(value) ? " active" : ""}`;
+        btn.textContent = value;
+        btn.dataset.value = value;
+        btn.addEventListener("click", () => {
+          btn.classList.toggle("active");
+          buildPrompt();
+        });
+        wrap.appendChild(btn);
+      });
+    }
+
+    function getActiveChipValues(containerId){
+      return Array.from(document.querySelectorAll(`#${containerId} .chip-btn.active`)).map(btn => btn.dataset.value);
+    }
+
+    function setActiveChipValues(containerId, values){
+      const lookup = new Set(values || []);
+      document.querySelectorAll(`#${containerId} .chip-btn`).forEach(btn => {
+        btn.classList.toggle("active", lookup.has(btn.dataset.value));
+      });
+    }
+
+    function updateSliderValueLabel(sliderId, labelId){
+      const slider = document.getElementById(sliderId);
+      const label = document.getElementById(labelId);
+      if(!slider || !label) return;
+      label.textContent = `${slider.value}%`;
+    }
+
+    function describeMusicDirection(genres, influences, vocalType, weirdness, styleInfluence, audioInfluence, data){
+      const genreText = genres.length ? genres.join(", ") : "genre-flexible crossover";
+      const influenceText = influences.length ? influences.join(", ") : "modern glam mood references";
+      const vocalText = vocalType.length ? vocalType.join(" + ") : "Vocal";
+      const subject = safeValue(data.subjectType, "main character");
+      const theme = safeValue(data.primaryPlatform, "creator brand");
+      const concept = safeValue(data.sceneConcept, "social-media fantasy concept");
+      const mood = safeValue(data.mood, "bold");
+      const energy = safeValue(data.energyLevel, "high energy");
+      const style = safeValue(data.artStyle, "glossy cinematic fantasy");
+      return {genreText, influenceText, vocalText, subject, theme, concept, mood, energy, style,
+        settingsText:`Genres: ${genreText}
+Style influences: ${influenceText}
+Vocal type: ${vocalText}
+Weirdness: ${weirdness}%
+Style Influence: ${styleInfluence}%
+Audio Influence: ${audioInfluence}%
+Direction: Keep the music tied to the ${subject}, ${theme}, ${concept}, ${mood} mood, ${energy} energy, and ${style} finish. Use references for vibe only, not imitation.`};
+    }
+
+    function trimOutput(text, maxLen = 980){
+      const cleaned = String(text || "").trim();
+      if(cleaned.length <= maxLen) return cleaned;
+      return cleaned.slice(0, maxLen - 3).trim() + "...";
+    }
+
+    function buildSunoOutputs(data){
+      const genres = getActiveChipValues("sunoGenreChips");
+      const influences = getActiveChipValues("sunoStyleChips");
+      const vocalType = getActiveChipValues("sunoVocalTypeChips");
+      const weirdness = val("weirdnessSlider") || "20";
+      const styleInfluence = val("styleInfluenceSlider") || "55";
+      const audioInfluence = val("audioInfluenceSlider") || "30";
+      const dir = describeMusicDirection(genres, influences, vocalType, weirdness, styleInfluence, audioInfluence, data);
+
+      const subject = titleCaseWords(dir.subject || "Main Character");
+      const platform = titleCaseWords(dir.theme || "Creator Brand");
+      const concept = dir.concept || "social-media fantasy concept";
+      const mood = dir.mood || "bold";
+      const energy = dir.energy || "high energy";
+      const hook = titleCaseWords(data.sloganText || data.screenText || data.storyVibe || `${subject} In Motion`);
+      const vocalMode = vocalType.length ? vocalType.join(" + ") : "Vocal";
+      const vocalDirection = vocalMode.includes("Instrumental") && !vocalMode.includes("Vocal")
+        ? "Instrumental only. No sung lyrics. Let the melody, textures, drops, transitions, and arrangement carry the emotion."
+        : "Vocal-led performance. Keep the delivery catchy, emotional, polished, and performance-ready.";
+      const genreBlend = genres.length ? genres.join(", ") : "genre-flexible crossover";
+      const influenceBlend = influences.length ? influences.join(", ") : "modern glam mood references";
+
+      const jingle = trimOutput([
+        "JINGLE",
+        "",
+        `Genre blend: ${genreBlend}.`,
+        `Style influence references: ${influenceBlend}.`,
+        `Vocal direction: ${vocalDirection}`,
+        "",
+        `[Hook]`,
+        `${hook}, light it up, step in and glow,`,
+        `${subject} energy, let the whole world know,`,
+        `${mood} soul with a ${energy} rush,`,
+        `Big ${platform} dreams and we do not hush.`
+      ].join("\n"));
+
+      const song30 = trimOutput([
+        "30-SECOND SONG",
+        "",
+        `Genre blend: ${genreBlend}.`,
+        `Style influence references: ${influenceBlend}.`,
+        `Vocal direction: ${vocalDirection}`,
+        "",
+        `[Verse]`,
+        `${subject} in the frame and the lights feel right,`,
+        `${mood} in the heart with a glossed-up bite,`,
+        `${platform} heat and the whole room turns,`,
+        `Every little detail makes the spotlight burn.`,
+        "",
+        `[Hook]`,
+        `${hook}, move bold, move clean,`,
+        `Turn that vision to a whole new scene,`,
+        `${energy} pressure and a gold-touch glow,`,
+        `Built to rise and built to show.`
+      ].join("\n"));
+
+      const song60 = trimOutput([
+        "1-MINUTE SONG",
+        "",
+        `Genre blend: ${genreBlend}.`,
+        `Style influence references: ${influenceBlend}.`,
+        `Vocal direction: ${vocalDirection}`,
+        "",
+        `[Verse 1]`,
+        `${subject} walking in like the whole room knows,`,
+        `${mood} in the face and the power just shows,`,
+        `${concept} with a main-character spin,`,
+        `Every frame says now is the time to win.`,
+        "",
+        `[Pre-Hook]`,
+        `From the first bright flash to the final pose,`,
+        `Every beat lands clean and the whole thing glows.`,
+        "",
+        `[Hook]`,
+        `${hook}, show up, shine up, hold that crown,`,
+        `Take that dream and never tone it down,`,
+        `${platform} fire with a luxe upgrade,`,
+        `Built for the moment and built to stay.`,
+        "",
+        `[Verse 2]`,
+        `${energy} drive and a polished heartbeat,`,
+        `Big-screen confidence with a rhythm so sweet,`,
+        `${mood} but fearless when the lights pour in,`,
+        `Turn the pressure into power and do it again.`
+      ].join("\n"));
+
+      const settings = [
+        `Suggested Suno Settings`,
+        ``,
+        `Genres: ${genreBlend}`,
+        `Style influences: ${influenceBlend}`,
+        `Vocal type: ${vocalMode}`,
+        `Weirdness: ${weirdness}%`,
+        `Style Influence: ${styleInfluence}%`,
+        `Audio Influence: ${audioInfluence}%`,
+        `Music direction: Keep the song tied to the ${subject}, ${platform} theme, ${concept}, ${mood} mood, ${energy} energy, and overall ${dir.style} finish. Use artist/style references for mood, tone, confidence, groove, texture, and arrangement only — never for direct copying.`
+      ].join("\n");
+
+      return { jingle, song30, song60, settings };
+    }
+
+    function buildMarketingOutputs(data){
+      const audience = titleCaseWords(safeValue(data.brandingVibe, "digital product buyers"));
+      const theme = titleCaseWords(safeValue(data.primaryPlatform, "creator brand"));
+      const concept = safeValue(data.sceneConcept, "social-media fantasy concept");
+      const mood = safeValue(data.mood, "bold");
+      const style = safeValue(data.artStyle, "glossy cinematic fantasy");
+      const hook = titleCaseWords(data.sloganText || data.screenText || data.storyVibe || "Build The Glow-Up");
+      const story = safeValue(data.storyVibe, "brand growth");
+      const product = `${theme} prompt generator`;
+      const painPoint = `generic content that looks flat, forgettable, or easy to scroll past`;
+
+      return {
+        captions: trimOutput([
+          `1. ${hook} is built for brands that are tired of ${painPoint}. This concept pushes a ${mood}, polished, high-attention look that pulls people toward the offer.`,
+          `2. Want content that feels premium and actually supports clicks? This ${product} helps turn one idea into a stronger visual story, sharper positioning, and more buyer curiosity.`,
+          `3. This is not just pretty content. It is a traffic-focused visual angle built around ${theme}, ${story}, and a ${style} finish that helps warm people up for the sale.`
+        ].join("\n")),
+        hashtags: trimOutput(`#digitalproducts #contentcreator #promptgenerator #aitools #socialmediamarketing #marketingstrategy #brandglowup #creatorbusiness #sellonline #trafficstrategy #visualbranding #contentthatconverts #womeninbusiness #onlineincome #marketingcontent #salescopy #luxurybranding #tiktokmarketing #instagrammarketing #pinterestmarketing`),
+        seoKeywords: trimOutput(`social media fantasy prompt generator, Suno music prompt generator, marketing content suite, AI prompt generator for creators, digital product marketing copy, traffic focused content generator, sales focused promo copy, glossy brand content generator, creator marketing captions, product launch content ideas, social media ad copy generator, premium visual branding prompts`),
+        ctas: trimOutput([
+          `Tap the link and turn this concept into your next click-driving campaign.`,
+          `See the full product on the page and build your next premium promo faster.`,
+          `Grab the generator now and create content designed to pull traffic and support sales.`,
+          `Shop now and turn one strong idea into visuals, music direction, and promo copy.`
+        ].join("\n")),
+        email: trimOutput(`Subject: ${hook} is built to pull more eyes to your offer
+
+If your content has been blending in, this is the fix. ${product} helps you create a stronger visual concept, a more premium story angle, and traffic-focused promo copy that supports real sales goals. Instead of guessing what to post, you get a polished campaign direction that feels strategic from the first look. Click through, see the product, and use it to build content that gets attention and moves people toward the page.`),
+        pinterest: trimOutput(`Create a Pinterest promo around ${hook} by leading with the transformation and the premium visual payoff. Show that this concept helps turn flat content into a ${mood}, polished campaign idea, then drive viewers straight to the product page to explore the full offer.`),
+        tiktok: trimOutput(`Hook: Your content looks good, but does it sell?
+Body: This ${product} takes one concept and turns it into a premium visual angle, music direction, and strategic promo copy built for traffic.
+CTA: Hit the link and see the full product.`),
+        facebook: trimOutput(`If you want content that feels more intentional, more premium, and more likely to drive clicks, this ${product} is built for that. It helps shape your concept, sharpen your promo angle, and send viewers back to your page with a stronger reason to act.`),
+        instagram: trimOutput(`Pretty is not enough anymore. Your content needs a concept, a hook, and a reason people click. ${hook} gives you a ${mood}, sales-focused direction that feels polished and strategic from the first frame. Link in bio.`),
+        youtube: trimOutput(`This concept is ideal for showing how one idea can become a full campaign package. Break down the visual theme, the music direction, and the promotional strategy, then direct viewers to the website so they can use the full generator for themselves.`),
+        ad: trimOutput(`Stop blending in. ${hook} helps turn one visual idea into a premium, traffic-focused campaign with stronger hooks, better positioning, and content built to support product sales. Click now and see the full offer.`)
+      };
+    }
+
+    function buildAnimatedVideoScript(data){
+      const subject = titleCaseWords(data.subjectType || "Main Character");
+      const expression = safeValue(data.expression, "confident");
+      const pose = safeValue(data.pose, "hero pose");
+      const motion = safeValue(data.movementLevel, "dynamic motion");
+      const theme = safeValue(data.primaryPlatform, "creator platform");
+      const concept = safeValue(data.sceneConcept, "moving through a social-media fantasy world");
+      const mood = safeValue(data.mood, "bold");
+      const energy = safeValue(data.energyLevel, "high energy");
+      const style = safeValue(data.artStyle, "glossy cinematic fantasy style");
+      const hook = titleCaseWords(data.sloganText || data.screenText || data.storyVibe || "Grow Your Empire");
+      return [
+        "8-SECOND ANIMATED VIDEO SCRIPT",
+        "",
+        "Source: built from the main generated prompt.",
+        "Direction: create a short animation-based script only. No separate image prompt. No full scene description.",
+        "",
+        `0-2s — Action: ${subject} snaps into frame in a ${pose}, reacts with a ${expression} beat, and starts moving with ${motion}.`,
+        `2-5s — Action: the character leans into the ${theme} concept, pushes the ${concept} forward, and animates with ${mood}, ${energy} momentum while keeping the ${style} look consistent.`,
+        `5-8s — Action: the character lands a strong hero finish, locks eyes with the viewer, and seals the moment with a final power move tied to "${hook}".`,
+        "",
+        `Voiceover: "${hook}. Move bold, show up bigger, and turn your vision into motion."`,
+        "",
+        "Performance notes: keep it character-led, expressive, punchy, and fully tied to the main prompt every time."
+      ].join("\n");
+    }
+
+    function buildPrompt(){
+      const subjectType = pick("subjectType");
+      const ageVibe = pick("ageVibe");
+      const bodyType = pick("bodyType");
+      const skinTone = pick("skinTone");
+      const faceVibe = pick("faceVibe");
+      const hairStyle = pick("hairStyle");
+      const expression = pick("expression");
+      const wardrobe = pick("wardrobe");
+      const shoes = pick("shoes");
+      const accessories = pick("accessories");
+      const primaryPlatform = pick("primaryPlatform");
+      const secondaryPlatforms = pick("secondaryPlatforms");
+      const screenType = pick("screenType");
+      const brandingVibe = pick("brandingVibe");
+      const pose = pick("pose");
+      const bodyAngle = pick("bodyAngle");
+      const handAction = pick("handAction");
+      const movementLevel = pick("movementLevel");
+      const sceneConcept = pick("sceneConcept");
+      const environment = pick("environment");
+      const foregroundElements = pick("foregroundElements");
+      const backgroundElements = pick("backgroundElements");
+      const sceneDepth = pick("sceneDepth");
+      const mood = pick("mood");
+      const energyLevel = pick("energyLevel");
+      const storyVibe = pick("storyVibe");
+      const lightingStyle = pick("lightingStyle");
+      const lightDirection = pick("lightDirection");
+      const glowIntensity = pick("glowIntensity");
+      const shadowStyle = pick("shadowStyle");
+      const primaryColors = pick("primaryColors");
+      const paletteStyle = pick("paletteStyle");
+      const surfaceFinish = pick("surfaceFinish");
+      const floatingIcons = pick("floatingIcons");
+      const motionEffects = pick("motionEffects");
+      const uiEffects = pick("uiEffects");
+      const specialEffectFocus = pick("specialEffectFocus");
+      const typographyStyle = pick("typographyStyle");
+      const shotType = pick("shotType");
+      const lensFeel = pick("lensFeel");
+      const compositionStyle = pick("compositionStyle");
+      const aspectRatio = pick("aspectRatio");
+      const artStyle = pick("artStyle");
+      const detailLevel = pick("detailLevel");
+      const renderFinish = pick("renderFinish");
+
+      const shirtText = val("shirtText");
+      const screenText = val("screenText");
+      const sloganText = val("sloganText");
+
+      const customFacialDetails = val("customFacialDetails");
+      const customHairDetails = val("customHairDetails");
+      const customDashboardText = val("customDashboardText");
+      const customBrandThemeNotes = val("customBrandThemeNotes");
+      const customLightingNotes = val("customLightingNotes");
+      const customColorPalette = val("customColorPalette");
+      const customEffects = val("customEffects");
+      const customCameraDirection = val("customCameraDirection");
+      const customCompositionNotes = val("customCompositionNotes");
+      const customRenderNotes = val("customRenderNotes");
+
+      const parts = [];
+      addSentence(parts, `Create a highly detailed, cinematic, surreal social-media fantasy illustration in a glossy 3D commercial poster style.`);
+      addSentence(parts, `The main subject is ${articleize(subjectType)} with a ${ageVibe} vibe, ${bodyType} build, ${skinTone} skin tone, ${faceVibe} face, and ${hairStyle}.`);
+      addSentence(parts, expression ? `The expression is ${expression}.` : "");
+      addSentence(parts, wardrobe || shoes || accessories ? `The subject is wearing ${wardrobe}${shoes ? `, paired with ${shoes}` : ""}${accessories && accessories !== "none" ? `, and styled with ${accessories}` : ""}.` : "");
+      addSentence(parts, customFacialDetails ? `Facial details: ${customFacialDetails}.` : "");
+      addSentence(parts, customHairDetails ? `Hair details: ${customHairDetails}.` : "");
+
+      addSentence(parts, primaryPlatform || secondaryPlatforms || screenType || brandingVibe ? `The theme centers around ${primaryPlatform}${secondaryPlatforms && secondaryPlatforms !== "none" ? `, supported by ${secondaryPlatforms}` : ""}. The interface shown is ${screenType}, with a branding vibe of ${brandingVibe}.` : "");
+      addSentence(parts, customDashboardText ? `Dashboard and interface details: ${customDashboardText}.` : "");
+      addSentence(parts, customBrandThemeNotes ? `Brand and theme notes: ${customBrandThemeNotes}.` : "");
+
+      addSentence(parts, pose || bodyAngle || handAction || movementLevel ? `The subject is ${pose} in a ${bodyAngle} view, with ${handAction}. The movement level is ${movementLevel}.` : "");
+
+      addSentence(parts, sceneConcept || environment || foregroundElements || backgroundElements || sceneDepth ? `The surreal concept shows the subject ${sceneConcept} inside ${environment}. Foreground elements include ${foregroundElements}. Background elements include ${backgroundElements}. Scene depth is ${sceneDepth}.` : "");
+
+      addSentence(parts, mood || energyLevel || storyVibe ? `The overall mood is ${mood}, with ${energyLevel} energy and a ${storyVibe} storytelling feel.` : "");
+
+      addSentence(parts, lightingStyle || lightDirection || glowIntensity || shadowStyle ? `Lighting is ${lightingStyle}, with ${lightDirection}, ${glowIntensity} glow, and ${shadowStyle}.` : "");
+      addSentence(parts, customLightingNotes ? `Additional lighting notes: ${customLightingNotes}.` : "");
+
+      addSentence(parts, primaryColors || paletteStyle || surfaceFinish ? `The color palette features ${primaryColors} with a ${paletteStyle} treatment and ${surfaceFinish} surfaces.` : "");
+      addSentence(parts, customColorPalette ? `Extra color notes: ${customColorPalette}.` : "");
+
+      addSentence(parts, floatingIcons || motionEffects || uiEffects || specialEffectFocus ? `Visual effects include ${floatingIcons}, ${motionEffects}, and ${uiEffects}, with special emphasis on ${specialEffectFocus}.` : "");
+      addSentence(parts, customEffects ? `Additional effects: ${customEffects}.` : "");
+
+      const textLines = [];
+      if(shirtText) textLines.push(`shirt text saying "${shirtText}"`);
+      if(screenText) textLines.push(`screen text saying "${screenText}"`);
+      if(sloganText) textLines.push(`slogan text saying "${sloganText}"`);
+      if(textLines.length){
+        addSentence(parts, `Optional text elements include ${joinNatural(textLines)}, styled in ${typographyStyle}.`);
+      } else if (typographyStyle) {
+        addSentence(parts, `Typography style is ${typographyStyle}.`);
+      }
+
+      addSentence(parts, shotType || lensFeel || compositionStyle || aspectRatio ? `The camera framing is ${shotType} with a ${lensFeel} look. The composition is ${compositionStyle}, formatted in ${aspectRatio}.` : "");
+      addSentence(parts, customCameraDirection ? `Camera direction: ${customCameraDirection}.` : "");
+      addSentence(parts, customCompositionNotes ? `Composition notes: ${customCompositionNotes}.` : "");
+
+      addSentence(parts, artStyle || detailLevel || renderFinish ? `Art style is ${artStyle}, with ${detailLevel} detail and a ${renderFinish} finish.` : "");
+      addSentence(parts, customRenderNotes ? `Render notes: ${customRenderNotes}.` : "");
+
+      addSentence(parts, `Sharp focus, ultra-detailed textures, clean edges, glowing highlights, premium rendering, dramatic depth, polished surfaces, vibrant commercial finish, visually striking, scroll-stopping social media fantasy art.`);
+
+      const basePrompt = parts.join("\n\n");
+
+      const compactParts = [];
+      compactParts.push(`A ${subjectType} with ${bodyType}, ${skinTone}, ${hairStyle}, and ${expression}, wearing ${wardrobe}${accessories && accessories !== "none" ? ` with ${accessories}` : ""}, in a ${pose} inside a surreal ${primaryPlatform} fantasy world.`);
+      compactParts.push(`The subject is ${sceneConcept} in ${environment}, surrounded by ${floatingIcons}, ${foregroundElements}, ${backgroundElements}, and ${uiEffects}.`);
+      compactParts.push(`Mood is ${mood}, energy is ${energyLevel}, lighting is ${lightingStyle}, color palette is ${primaryColors}, and the style is ${artStyle}, glossy, cinematic, ${detailLevel}, ${renderFinish}, and formatted in ${aspectRatio}.`);
+      if (shirtText || screenText || sloganText) {
+        const tags = [];
+        if(shirtText) tags.push(`shirt text "${shirtText}"`);
+        if(screenText) tags.push(`screen text "${screenText}"`);
+        if(sloganText) tags.push(`slogan "${sloganText}"`);
+        compactParts.push(`Text elements: ${joinNatural(tags)}.`);
+      }
+      if (customEffects) compactParts.push(`Extra effects: ${customEffects}.`);
+      if (customRenderNotes) compactParts.push(`Extra render notes: ${customRenderNotes}.`);
+
+      const compactPrompt = compactParts.join(" ");
+
+      const negativePrompt = val("negativePrompt");
+      const gptData = {
+        primaryPlatform, brandingVibe, sceneConcept, environment, mood, energyLevel, lightingStyle, primaryColors, artStyle, renderFinish
+      };
+      const gptBlocks = buildGptInstructions(gptData);
+      const animatedVideoScript = buildAnimatedVideoScript({
+        subjectType, expression, pose, movementLevel, primaryPlatform, sceneConcept, mood, energyLevel, artStyle, sloganText, screenText, storyVibe
+      });
+      const baseNegativeText = `BASE PROMPT:\n${basePrompt}\n\nNEGATIVE PROMPT:\n${negativePrompt}`;
+      const fullOutput = `${baseNegativeText}\n\nCUSTOM GPT INSTRUCTIONS:\n${gptBlocks.instructionBlock}\n\nSTARTER QUESTIONS:\n${gptBlocks.starterQuestions}\n\nKNOWLEDGE SECTION:\n${gptBlocks.knowledgeSection}\n\n8-SECOND ANIMATED VIDEO SCRIPT:\n${animatedVideoScript}`;
+
+      document.getElementById("baseNegativeOutput").textContent = baseNegativeText;
+      document.getElementById("gptInstructionsOutput").textContent = gptBlocks.instructionBlock;
+      document.getElementById("starterQuestionsOutput").textContent = gptBlocks.starterQuestions;
+      document.getElementById("knowledgeOutput").textContent = gptBlocks.knowledgeSection;
+      document.getElementById("animatedVideoOutput").textContent = animatedVideoScript;
+
+      const sunoOutputs = buildSunoOutputs({
+        subjectType, primaryPlatform, sceneConcept, environment, mood, energyLevel, storyVibe, sloganText, screenText
+      });
+      document.getElementById("sunoJingleOutput").textContent = sunoOutputs.jingle;
+      document.getElementById("suno30Output").textContent = sunoOutputs.song30;
+      document.getElementById("suno60Output").textContent = sunoOutputs.song60;
+      document.getElementById("sunoSettingsOutput").textContent = sunoOutputs.settings;
+
+      const marketingOutputs = buildMarketingOutputs({
+        brandingVibe, primaryPlatform, sceneConcept, mood, artStyle, sloganText, screenText, storyVibe
+      });
+      document.getElementById("captionsOutput").textContent = marketingOutputs.captions;
+      document.getElementById("hashtagsOutput").textContent = marketingOutputs.hashtags;
+      document.getElementById("seoKeywordsOutput").textContent = marketingOutputs.seoKeywords;
+      document.getElementById("ctasOutput").textContent = marketingOutputs.ctas;
+      document.getElementById("emailPromoOutput").textContent = marketingOutputs.email;
+      document.getElementById("pinterestPromoOutput").textContent = marketingOutputs.pinterest;
+      document.getElementById("tiktokPromoOutput").textContent = marketingOutputs.tiktok;
+      document.getElementById("facebookPromoOutput").textContent = marketingOutputs.facebook;
+      document.getElementById("instagramPromoOutput").textContent = marketingOutputs.instagram;
+      document.getElementById("youtubePromoOutput").textContent = marketingOutputs.youtube;
+      document.getElementById("adCopyOutput").textContent = marketingOutputs.ad;
+
+      const fullOutputWithSunoAndMarketing = `${fullOutput}
+
+SUNO JINGLE:
+${sunoOutputs.jingle}
+
+SUNO 30-SECOND SONG:
+${sunoOutputs.song30}
+
+SUNO 1-MINUTE SONG:
+${sunoOutputs.song60}
+
+SUNO SETTINGS:
+${sunoOutputs.settings}
+
+CAPTIONS:
+${marketingOutputs.captions}
+
+HASHTAGS:
+${marketingOutputs.hashtags}
+
+SEO KEYWORDS:
+${marketingOutputs.seoKeywords}
+
+CALLS TO ACTION:
+${marketingOutputs.ctas}
+
+EMAIL PROMO:
+${marketingOutputs.email}
+
+PINTEREST PROMO:
+${marketingOutputs.pinterest}
+
+TIKTOK PROMO:
+${marketingOutputs.tiktok}
+
+FACEBOOK PROMO:
+${marketingOutputs.facebook}
+
+INSTAGRAM PROMO:
+${marketingOutputs.instagram}
+
+YOUTUBE PROMO:
+${marketingOutputs.youtube}
+
+AD COPY:
+${marketingOutputs.ad}`;
+
+      const wordCount = listWords(fullOutputWithSunoAndMarketing);
+      const charCount = fullOutputWithSunoAndMarketing.length;
+      document.getElementById("wordCountBadge").textContent = `${wordCount} words`;
+      document.getElementById("charCountBadge").textContent = `${charCount} chars`;
+    }
+
+    function joinNatural(arr){
+      if(arr.length === 0) return "";
+      if(arr.length === 1) return arr[0];
+      if(arr.length === 2) return `${arr[0]} and ${arr[1]}`;
+      return `${arr.slice(0,-1).join(", ")}, and ${arr[arr.length-1]}`;
+    }
+
+    function articleize(text){
+      if(!text) return "subject";
+      const cleaned = text.trim();
+      const lower = cleaned.toLowerCase();
+      const vowelStart = /^[aeiou]/.test(lower);
+      const noArticleStarts = ["female","male","person","content creator","influencer","entrepreneur","streamer","social media coach","digital product seller","faceless avatar","beauty creator","fashion creator","lifestyle creator","business owner"];
+      if(noArticleStarts.includes(lower)){
+        return cleaned;
+      }
+      return `${vowelStart ? "an" : "a"} ${cleaned}`;
+    }
+
+    async function copyText(text){
+      try{
+        await navigator.clipboard.writeText(text);
+      } catch(err){
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+      }
+    }
+
+    function clearAll(){
+      document.querySelectorAll("select").forEach((el) => {
+        el.selectedIndex = 0;
+      });
+      document.querySelectorAll("input[type='text'], textarea").forEach(el => {
+        el.value = "";
+      });
+      document.getElementById("negativePrompt").value = defaultNegativePrompt;
+    renderChipGroup("sunoGenreChips", sunoGenreOptions, ["Afrobeats", "R&B", "Pop"]);
+    renderChipGroup("sunoStyleChips", sunoStyleOptions, ["Beyoncé-inspired confidence", "SZA-inspired vulnerability", "glam boss energy"]);
+    renderChipGroup("sunoVocalTypeChips", sunoVocalTypeOptions, ["Vocal"]);
+    updateSliderValueLabel("weirdnessSlider", "weirdnessValue");
+    updateSliderValueLabel("styleInfluenceSlider", "styleInfluenceValue");
+    updateSliderValueLabel("audioInfluenceSlider", "audioInfluenceValue");
+      buildPrompt();
+    }
+
+    function bindClick(id, handler){
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        handler(e);
+      });
+    }
+
+    function setupButtonBindings(){
+      bindClick("generateBtn", () => buildPrompt());
+      bindClick("randomBtn", () => setRandomValues());
+      bindClick("clearBtn", () => clearAll());
+      bindClick("copyCombinedBtn", () => {
+        const parts = [
+          document.getElementById("baseNegativeOutput")?.textContent || "",
+          document.getElementById("gptInstructionsOutput")?.textContent || "",
+          document.getElementById("starterQuestionsOutput")?.textContent || "",
+          document.getElementById("knowledgeOutput")?.textContent || "",
+          document.getElementById("animatedVideoOutput")?.textContent || "",
+          document.getElementById("sunoJingleOutput")?.textContent || "",
+          document.getElementById("suno30Output")?.textContent || "",
+          document.getElementById("suno60Output")?.textContent || "",
+          document.getElementById("sunoSettingsOutput")?.textContent || "",
+          document.getElementById("captionsOutput")?.textContent || "",
+          document.getElementById("hashtagsOutput")?.textContent || "",
+          document.getElementById("seoKeywordsOutput")?.textContent || "",
+          document.getElementById("ctasOutput")?.textContent || "",
+          document.getElementById("emailPromoOutput")?.textContent || "",
+          document.getElementById("pinterestPromoOutput")?.textContent || "",
+          document.getElementById("tiktokPromoOutput")?.textContent || "",
+          document.getElementById("facebookPromoOutput")?.textContent || "",
+          document.getElementById("instagramPromoOutput")?.textContent || "",
+          document.getElementById("youtubePromoOutput")?.textContent || "",
+          document.getElementById("adCopyOutput")?.textContent || ""
+        ].filter(Boolean);
+        copyText(parts.join("\n\n"));
+      });
+      bindClick("copyBaseNegativeBtn", () => copyText(document.getElementById("baseNegativeOutput")?.textContent || ""));
+      bindClick("copyGptInstructionsOnlyBtn", () => copyText(document.getElementById("gptInstructionsOutput")?.textContent || ""));
+      bindClick("copyStarterQuestionsBtn", () => copyText(document.getElementById("starterQuestionsOutput")?.textContent || ""));
+      bindClick("copyKnowledgeBtn", () => copyText(document.getElementById("knowledgeOutput")?.textContent || ""));
+      bindClick("copyAnimatedVideoBtn", () => copyText(document.getElementById("animatedVideoOutput")?.textContent || ""));
+      bindClick("copySunoJingleBtn", () => copyText(document.getElementById("sunoJingleOutput")?.textContent || ""));
+      bindClick("copySuno30Btn", () => copyText(document.getElementById("suno30Output")?.textContent || ""));
+      bindClick("copySuno60Btn", () => copyText(document.getElementById("suno60Output")?.textContent || ""));
+      bindClick("copySunoSettingsBtn", () => copyText(document.getElementById("sunoSettingsOutput")?.textContent || ""));
+      bindClick("copyCaptionsBtn", () => copyText(document.getElementById("captionsOutput")?.textContent || ""));
+      bindClick("copyHashtagsBtn", () => copyText(document.getElementById("hashtagsOutput")?.textContent || ""));
+      bindClick("copySeoKeywordsBtn", () => copyText(document.getElementById("seoKeywordsOutput")?.textContent || ""));
+      bindClick("copyCtasBtn", () => copyText(document.getElementById("ctasOutput")?.textContent || ""));
+      bindClick("copyEmailPromoBtn", () => copyText(document.getElementById("emailPromoOutput")?.textContent || ""));
+      bindClick("copyPinterestPromoBtn", () => copyText(document.getElementById("pinterestPromoOutput")?.textContent || ""));
+      bindClick("copyTikTokPromoBtn", () => copyText(document.getElementById("tiktokPromoOutput")?.textContent || ""));
+      bindClick("copyFacebookPromoBtn", () => copyText(document.getElementById("facebookPromoOutput")?.textContent || ""));
+      bindClick("copyInstagramPromoBtn", () => copyText(document.getElementById("instagramPromoOutput")?.textContent || ""));
+      bindClick("copyYouTubePromoBtn", () => copyText(document.getElementById("youtubePromoOutput")?.textContent || ""));
+      bindClick("copyAdCopyBtn", () => copyText(document.getElementById("adCopyOutput")?.textContent || ""));
+      [
+        ["weirdnessSlider","weirdnessValue"],
+        ["styleInfluenceSlider","styleInfluenceValue"],
+        ["audioInfluenceSlider","audioInfluenceValue"]
+      ].forEach(([sliderId,labelId]) => {
+        const slider = document.getElementById(sliderId);
+        if(slider){
+          slider.addEventListener("input", () => {
+            updateSliderValueLabel(sliderId, labelId);
+            buildPrompt();
+          });
+        }
+      });
+      bindClick("scrollUpBtn", () => window.scrollTo({top: 0, behavior: "smooth"}));
+      bindClick("scrollDownBtn", () => window.scrollTo({top: document.body.scrollHeight, behavior: "smooth"}));
+    }
+
+    document.querySelectorAll("select,input,textarea").forEach(el => {
+      el.addEventListener("input", buildPrompt);
+      el.addEventListener("change", buildPrompt);
+    });
+
+    window.addEventListener("load", setupButtonBindings);
+    buildPrompt();
+  </script>
+  <button class="scroll-fab up" id="scrollUpBtn" aria-label="Scroll up">↑</button>
+  <button class="scroll-fab down" id="scrollDownBtn" aria-label="Scroll down">↓</button>
+</body>
+</html>
